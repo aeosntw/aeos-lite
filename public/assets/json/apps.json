@@ -1,0 +1,31 @@
+{
+  "title": "All Apps",
+  "description": "",
+  "logoUrl": "/assets/img/logos/Aeos.png",
+  "games": [
+    {
+      "title": "Lightspeed Filter Checker",
+      "imageUrl": "/assets/img/logos/lightspeed.png",
+      "genre": "Apps",
+      "url": "/launch.html#/pages/lscheck"
+    },
+    {
+      "title": "Soundboard",
+      "imageUrl": "/assets/img/games/soundboard.png",
+      "genre": "Apps",
+      "url": "/launch.html#/assets/games/soundboard"
+    },
+    {
+      "title": "EmulatorJS",
+      "imageUrl": "/assets/img/games/emulatorjs.png",
+      "genre": "Apps",
+      "url": "/launch.html#/lib/ejs"
+    },
+    {
+      "title": "30 Dollar Website",
+      "imageUrl": "/assets/img/games/30-dollar-website.jpg",
+      "genre": "Apps",
+      "url": "/launch.html#/assets/games/30-dollar-website"
+    }
+  ]
+}

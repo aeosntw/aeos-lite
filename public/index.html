@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aeos Lite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="/assets/fonts/Inter.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/lib/fa/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/settings.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      background-image: url('/assets/img/Aeos Background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+    }
+    .sidebar {
+      width: 70px !important;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      height: 100vh;
+      position: relative;
+      justify-content: flex-start;
+    }
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+.sidebar-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+}
+    .sidebar-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .sidebar-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-item i { font-size: 1.2rem; }
+    .content-area {
+      width: 100%;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      box-sizing: border-box;
+    }
+    .content-area iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      margin: 0;
+      padding: 0;
+      display: block;
+      box-sizing: border-box;
+    }
+    .main-content {
+      padding: 20px;
+      overflow-y: auto;
+      height: calc(100vh - 40px);
+    }
+    .filter-search-combined {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .search-input-wrapper {
+      display: flex;
+      align-items: center;
+      background-color: rgba(0, 0, 50, 0.9);
+      border-radius: 9999px;
+      padding: 0 10px;
+      gap: 10px;
+    }
+    .search-input-wrapper select,
+    .search-input-wrapper input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      padding: 10px;
+      outline: none;
+    }
+    .search-input-wrapper input::placeholder {
+      color: #ccc;
+    }
+    .search-input-wrapper select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    .search-icon {
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+	.sidebar-divider {
+  width: 60%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 0px 0;
+}
+
+.sidebar-item {
+  margin: 8px 0;
+}
+.sidebar-divider {
+  width: 60%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 2px 0;
+}
+
+  </style>
+</head>
+<body>
+<div id="aeos-update-trigger"></div>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/assets/img/logos/Aeos.png" alt="Aeos Logo" />
+    </div>
+<div class="sidebar-icons">
+  <div class="sidebar-item" id="home-button" title="Home"><i class="fas fa-home"></i></div>
+  <div class="sidebar-item" id="games-button" title="Games"><i class="fas fa-gamepad"></i></div>
+  <div class="sidebar-item" id="apps-button" title="Apps"><i class="fas fa-grid-2"></i></div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-item" id="movies-button" title="Movies"><i class="fas fa-film"></i></div>
+  <div class="sidebar-item" id="ai-button" title="AI"><i class="fas fa-robot"></i></div>
+
+  <div class="sidebar-item" id="settings-button" title="Settings"><i class="fas fa-cog"></i></div>
+</div>
+  </div>
+
+  <div class="content-area" id="content-area"></div>
+
+  <script src="/assets/js/log.js"></script>
+  <script src="/assets/js/overlay.js"></script>
+  <script src="/assets/js/games.js"></script>
+  <script src="/assets/js/widget.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const contentArea = document.getElementById('content-area');
+
+      const homeHTML = `
+        <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 100vh;">
+          <h1 id="mainHeader" style="font-size: 3.7em; margin-bottom: 10px; font-family: 'Inter', sans-serif; opacity: 0; transition: opacity 0.5s ease-in-out; margin-top: 0; text-shadow: none;">aeos lite.</h1>
+          <p class="splash-text" id="splashText" style="font-size: 19.2px; color: #f0f0f0; opacity: 0; cursor: pointer; min-height: 25px; transition: opacity 0.5s ease-in-out; margin-top: 10px;"> </p>
+        </div>
+      `;
+
+      const gamesHTML = `<div class="main-content"><div class="header-content"><h1 id="hub-title">Loading...</h1><p id="hub-description"></p><div class="filter-search-combined"><div class="search-input-wrapper"><select id="game-genre-filter-games" class="genre-dropdown"><option value="All">All Categories</option></select><input type="text" id="game-search-games" placeholder="Search games..."><i class="fas fa-search search-icon"></i></div></div></div><div class="games-grid" id="games-grid"></div></div>`;
+
+      const appsHTML = `<div class="main-content"><div class="header-content"><h1 id="hub-title">Loading...</h1><p id="hub-description"></p><div class="filter-search-combined"><div class="search-input-wrapper"><select id="game-genre-filter-apps" class="genre-dropdown"><option value="All">All Categories</option></select><input type="text" id="game-search-apps" placeholder="Search apps..."><i class="fas fa-search search-icon"></i></div></div></div><div class="games-grid" id="games-grid"></div></div>`;
+
+      const settingsHTML = `<div class="main-content"><div class="settings-container"><h1>Settings</h1><p class="subtitle">We use this info to enhance your experience.</p><div class="setting"><label for="enableLogging">Enable Tracking:</label><input type="checkbox" id="enableLogging"></div><div class="setting"><label for="useGps">Use GPS for Better Location (Requires Tracking Enabled):</label><input type="checkbox" id="useGps"></div></div><div id="notificationMessage" class="notification">Settings saved! Refresh the main application if changes aren't immediate.</div></div>`;
+
+      function loadContent(html, type) {
+        contentArea.innerHTML = html;
+
+        if (type === 'games') {
+          initializeHub({ jsonPath: '/assets/json/hub.json', genreFilterId: 'game-genre-filter-games', searchInputId: 'game-search-games', gridId: 'games-grid', titleId: 'hub-title', descriptionId: 'hub-description' });
+        } else if (type === 'apps') {
+          initializeHub({ jsonPath: '/assets/json/apps.json', genreFilterId: 'game-genre-filter-apps', searchInputId: 'game-search-apps', gridId: 'games-grid', titleId: 'hub-title', descriptionId: 'hub-description' });
+        }
+      }
+
+      function initSettingsScript() {
+        const enableLoggingCheckbox = document.getElementById('enableLogging');
+        const useGpsCheckbox = document.getElementById('useGps');
+        const notification = document.getElementById('notificationMessage');
+
+        function showNotification() {
+          notification.classList.add('show');
+          setTimeout(() => { notification.classList.remove('show'); }, 3000);
+        }
+
+        function updateSettings() {
+          localStorage.setItem('ENABLE_LOGGING', enableLoggingCheckbox.checked);
+          localStorage.setItem('USE_GPS', useGpsCheckbox.checked);
+          showNotification();
+        }
+
+        let initialEnableLogging = localStorage.getItem('ENABLE_LOGGING');
+        let initialUseGps = localStorage.getItem('USE_GPS');
+
+        if (initialEnableLogging === null) {
+          initialEnableLogging = 'false';
+          localStorage.setItem('ENABLE_LOGGING', initialEnableLogging);
+        }
+        if (initialUseGps === null) {
+          initialUseGps = 'false';
+          localStorage.setItem('USE_GPS', initialUseGps);
+        }
+
+        enableLoggingCheckbox.checked = initialEnableLogging === 'true';
+        useGpsCheckbox.checked = initialUseGps === 'true';
+        useGpsCheckbox.disabled = !enableLoggingCheckbox.checked;
+
+        enableLoggingCheckbox.addEventListener('change', function() {
+          useGpsCheckbox.disabled = !this.checked;
+          if (!this.checked) useGpsCheckbox.checked = false;
+          updateSettings();
+        });
+
+        useGpsCheckbox.addEventListener('change', updateSettings);
+      }
+
+      document.getElementById('home-button').addEventListener('click', () => {
+  loadContent(homeHTML);
+  initHomeScript();
+});
+      document.getElementById('games-button').addEventListener('click', () => loadContent(gamesHTML, 'games'));
+      document.getElementById('apps-button').addEventListener('click', () => loadContent(appsHTML, 'apps'));
+      document.getElementById('settings-button').addEventListener('click', () => {
+        loadContent(`<iframe src="settings.html" style="width:100%; height:100%; border:none;"></iframe>`);
+      });
+	  document.getElementById('movies-button').addEventListener('click', () => {
+  loadContent(`<iframe src="/pages/searchmedia.html" style="width:100%; height:100%; border:none;" allowfullscreen allow="fullscreen"></iframe>`);
+});
+
+document.getElementById('ai-button').addEventListener('click', () => {
+  loadContent(`<iframe src="/pages/ai" style="width:100%; height:100%; border:none;"></iframe>`);
+});
+
+      loadContent(homeHTML);
+      initHomeScript();
+
+      function initHomeScript() {
+        const splashTexts = [
+          "welcom or somethin",
+          "why are u here bro",
+          "the teacher is sooo looking at you",
+          "illegal things are legal until they're not",
+          "why does this specific message pop up more istg",
+          "coding is great!"
+        ];
+
+        function refreshSplashText() {
+          const splash = document.getElementById('splashText');
+          if (!splash) return;
+          splash.style.opacity = '0';
+          setTimeout(() => {
+            const randomIndex = Math.floor(Math.random() * splashTexts.length);
+            splash.textContent = splashTexts[randomIndex];
+            splash.style.opacity = '1';
+          }, 500);
+        }
+
+        const header = document.getElementById('mainHeader');
+        const splash = document.getElementById('splashText');
+        if (header) header.style.opacity = '1';
+        setTimeout(refreshSplashText, 100);
+
+        if (splash) splash.onclick = refreshSplashText;
+      }
+    });
+
+
+  </script>
+</body>
+</html>

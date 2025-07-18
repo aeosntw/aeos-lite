@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aeos</title>
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E0685N59S1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-E0685N59S1');
+</script>
+    <link rel="icon" type="image/x-icon" href="/assets/img/logos/favicon.png">
+	<link rel="stylesheet" href="/lib/fa/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh; 
+            width: 100vw; 
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+        }
+
+        body {
+            display: flex; 
+            flex-direction: column; 
+
+            position: relative; 
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 80px;
+            background: rgba(16, 22, 54, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 100;
+            overflow: hidden;
+            transition: width 0.3s ease;
+            border-radius: 0 20px 20px 0;
+        }
+
+    .main-content {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 60px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0 10px 10px 10px; 
+        box-sizing: border-box;
+        z-index: 1;
+    }
+
+    .iframe-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0px;
+        right: 0;
+        bottom: 0px;
+        background-color: #272759;
+        overflow: hidden;
+        border-radius: 0; 
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        z-index: 1;
+    }
+
+    .browser-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background-color: #272759;
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 60px;
+            padding: 0 5px 5px 5px;
+            position: fixed;
+            box-sizing: border-box;
+        }
+    }
+
+        .bottom-bar {
+            position: fixed; 
+            bottom: 0;
+            left: 0px; 
+            width: calc(100vw); 
+            height: 60px; 
+            background: rgba(16, 22, 54, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 15px; 
+            box-sizing: border-box;
+            z-index: 99;
+            gap: 8px; 
+            flex-wrap: wrap; 
+            min-height: 60px; 
+            justify-content: center; 
+        }
+
+.bottom-notch {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;         
+    height: 20px;        
+    background: rgba(16, 22, 54, 0.9);
+    border-radius: 12px 12px 0 0;
+    z-index: 101;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;     
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.3);
+    transition: bottom 0.3s ease;
+}
+
+.bottom-bar {
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.bottom-bar.show {
+    transform: translateY(0%);
+}
+
+.bottom-notch.open {
+    bottom: 60px; 
+    transition: bottom 0.3s ease;
+}
+
+        .refresh-btn,
+        .fullscreen-button,
+        .title-button {
+            padding: 8px 15px;
+            background: linear-gradient(45deg, #6a7eff, #8a6eff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .refresh-btn:hover,
+        .fullscreen-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(106, 126, 255, 0.4);
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-weight: 500;
+        }
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(5deg) scale(1.05);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .fullscreen-button,
+        .title-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            font-weight: 600;
+        }
+
+        .fullscreen-button:hover,
+        .title-button:hover {
+            background-color: rgba(29, 187, 214, 0.3);
+            color: #fff;
+            transform: scale(1.03);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cloaked-as-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 10px;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffdddd;
+            border: 1px solid #ff0000;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 10000;
+            font-family: 'Poppins', sans-serif;
+            color: #ff0000;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100vw; 
+                height: 60px; 
+                position: fixed; 
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 0; 
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px 0;
+            }
+
+            .sidebar:hover {
+                width: 100vw;
+            }
+
+            .logo-container {
+                display: none; 
+            }
+
+            .sidebar .nav-item {
+                padding: 10px 15px;
+                width: auto;
+            }
+
+            .sidebar .nav-text, .sidebar .version-number {
+                display: none;
+            }
+
+            .main-content {
+                left: 0; 
+                top: 60px; 
+                width: 100vw; 
+                height: calc(100vh - 120px); 
+                padding: 5px; 
+            }
+
+            .iframe-wrapper {
+                border-radius: 10px; 
+            }
+
+            .bottom-bar {
+                left: 0; 
+                width: 100vw; 
+                border-radius: 0;
+                height: 60px; 
+                min-height: 60px;
+                justify-content: space-around; 
+                padding: 0 10px;
+            }
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a2035; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000; 
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #splash-screen img {
+            width: 300px; 
+            height: auto;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #splash-screen p {
+            font-size: 1.2rem;
+            animation: fadeIn 1s ease-in-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .url-dropdown {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            white-space: nowrap;
+            -webkit-appearance: none; 
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2C197.8L154.7%2C65.5c-4.9-4.9-12.8-4.9-17.7%2C0L5.3%2C197.8c-4.9%2C4.9-4.9%2C12.8%2C0%2C17.7s12.8%2C4.9%2C17.7%2C0l131.7-131.8l131.7%2C131.8c4.9%2C4.9%2C12.8%2C4.9%2C17.7%2C0S291.9%2C202.7%2C287%2C197.8z%22%2F%3E%3C%2Fsvg%3E'); 
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px;
+            padding-right: 30px; 
+        }
+
+        .url-dropdown:hover {
+            background-color: rgba(255, 255, 255, 255);
+            color: #000;
+            transform: scale(1.03);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+<div id="aeos-update-trigger"></div>
+    <div id="splash-screen">
+        <img src="/assets/img/logos/Aeos Header Logo.png" alt="Aeos Logo">
+        <p>Loading your game...</p>
+    </div>
+
+    <div class="main-content" style="visibility: hidden;"> <div class="iframe-wrapper">
+            <iframe id="browser-iframe" class="browser-iframe" src="about:blank" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="bottom-bar" style="visibility: hidden;">
+	<select id="url-select" class="url-dropdown">
+            <option value="">Select a URL...</option>
+            </select>
+	<button id="refresh-btn" class="refresh-btn">🔄 Refresh</button>
+        <button id="fullscreen-button" class="fullscreen-button">Open Fullscreen 🧊</button>
+
+        <span class="cloaked-as-text">Open cloaked as:</span>
+        <button class="title-button" onclick="openGame('Clever | Portal', 'https://assets.clever.com/launchpad/2927b8160/favicon.ico?1')">Clever</button>
+        <button class="title-button" onclick="openGame('Google', 'https://www.google.com/favicon.ico')">Google</button>
+        <button class="title-button" onclick="openGame('Google Docs', 'https://ssl.gstatic.com/docs/documents/images/kix-favicon-2023q4.ico')">Google Docs</button>
+        <button class="title-button" onclick="openGame('Home | Schoology', 'https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico')">Schoology</button>
+    </div>
+<div class="bottom-notch" id="bottom-notch"><i class="fas fa-chevron-up"></i></div>
+
+    <script src="/js/sidebar.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const browserIframe = document.getElementById('browser-iframe');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const fullscreenButton = document.getElementById('fullscreen-button');
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContent = document.querySelector('.main-content');
+        const bottomBar = document.querySelector('.bottom-bar');
+        const currentEmbeddedUrlSpan = document.getElementById('current-embedded-url'); 
+            const urlSelect = document.getElementById('url-select'); 
+
+        const PROXY_BASE_URL = 'https://tech-learning.wine-software.com/embed.html#';
+
+            const customUrls = [
+                { name: "CrazyCattle3D 2 (Default)", url: "/assets/games/crazy-cattle-3d-2" },
+                { name: "CrazyCattle3D (Legacy)", url: "/assets/games/crazy-cattle-3d" },
+                { name: "CrazyCattle3D in Space", url: "/assets/games/crazy-cattle-3d-in-space" },
+                { name: "CheeseChompers3D", url: "/assets/games/cheese-chompers-3d" },
+                { name: "CrazyKitty3D", url: "/assets/games/crazy-kitty-3d" },
+                { name: "CrazyCow3D", url: "/assets/games/crazy-cow-3d" },
+				{ name: "CrazySprunki3D", url: "/assets/games/crazy-sprunki-3d" }
+            ];
+
+            function populateUrlDropdown() {
+                customUrls.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.url;
+                    option.textContent = item.name;
+                    urlSelect.appendChild(option);
+                });
+            }
+
+            function initialLoad() {
+                if (customUrls.length > 0) {
+                    const defaultUrl = customUrls[0].url;
+                    browserIframe.src = defaultUrl;
+                    urlSelect.value = defaultUrl; 
+                } else {
+                    browserIframe.src = 'about:blank'; 
+                }
+            }
+
+            function refreshIframe() {
+
+                browserIframe.src = browserIframe.src;
+            }
+
+        function updateDisplayedUrl(url) {
+            if (currentEmbeddedUrlSpan) {
+                currentEmbeddedUrlSpan.innerText = 'Current URL: ' + (url || 'None');
+                currentEmbeddedUrlSpan.title = url; 
+            }
+        }
+
+        function loadUrlFromHash() {
+            const hash = window.location.hash;
+            let targetUrl = 'about:blank'; 
+
+            if (hash.length > 1) {
+                targetUrl = hash.substring(1); 
+            }
+
+            browserIframe.src = targetUrl; 
+            updateDisplayedUrl(targetUrl); 
+
+            if (typeof gtag === 'function') {
+                gtag('event', 'embedded_url_loaded', {
+                    'event_category': 'Content Popularity',
+                    'event_label': targetUrl,
+                    'value': 1
+                });
+                console.log('GA Logged: embedded_url_loaded -', targetUrl);
+            }
+
+        }
+
+        function refreshIframe() {
+            browserIframe.src = browserIframe.src; 
+
+            if (typeof gtag === 'function') {
+                gtag('event', 'iframe_refresh', {
+                    'event_category': 'Interaction',
+                    'event_label': 'Refreshed: ' + browserIframe.src,
+                    'value': 1
+                });
+            }
+        }
+
+        function requestIframeFullscreen() {
+            if (browserIframe) {
+                if (browserIframe.requestFullscreen) {
+                    browserIframe.requestFullscreen();
+                } else if (browserIframe.mozRequestFullScreen) { 
+                    browserIframe.mozRequestFullScreen();
+                } else if (browserIframe.webkitRequestFullscreen) { 
+                    browserIframe.webkitRequestFullscreen();
+                } else if (browserIframe.msRequestFullscreen) { 
+                    browserIframe.msRequestFullscreen();
+                }
+            } else {
+                const messageBox = document.createElement('div');
+                messageBox.className = 'message-box';
+                messageBox.innerText = "Error: Could not find the iframe element to request fullscreen.";
+                document.body.appendChild(messageBox);
+                setTimeout(() => document.body.removeChild(messageBox), 5000);
+            }
+        }
+
+        window.openGame = function(title, faviconUrl) {
+            let currentIframeSrc = browserIframe.src;
+            let contentUrlToCloak = 'about:blank';
+
+            if (currentIframeSrc.startsWith(PROXY_BASE_URL)) {
+                try {
+                    contentUrlToCloak = decodeURIComponent(currentIframeSrc.substring(PROXY_BASE_URL.length));
+                } catch (e) {
+                    console.error("Error decoding URL for cloaking:", e);
+                    contentUrlToCloak = currentIframeSrc;
+                }
+            } else if (currentIframeSrc !== 'about:blank' && currentIframeSrc !== window.location.href) {
+                contentUrlToCloak = currentIframeSrc;
+            }
+
+            if (!contentUrlToCloak || contentUrlToCloak === 'about:blank') {
+                const messageBox = document.createElement('div');
+                messageBox.className = 'message-box';
+                messageBox.innerText = "No URL loaded in the iframe to cloak.";
+                document.body.appendChild(messageBox);
+                setTimeout(() => document.body.removeChild(messageBox), 3000);
+                return;
+            }
+
+            if (typeof gtag === 'function') {
+                gtag('event', 'game_cloaked', {
+                    'event_category': 'Engagement',
+                    'event_label': title + ' - ' + contentUrlToCloak,
+                    'value': 1
+                });
+            }
+
+            let openedWindow = window.open('about:blank', '_blank');
+
+            if (!openedWindow) {
+                const messageBox = document.createElement('div');
+                messageBox.className = 'message-box';
+                messageBox.innerText = "Please allow popups for this website to open the content.";
+                document.body.appendChild(messageBox);
+                setTimeout(() => document.body.removeChild(messageBox), 5000);
+                return;
+            }
+
+            try {
+                openedWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>${title}</title>
+                        <link rel="icon" type="image/x-icon" href="${faviconUrl}">
+                        <style>
+                            html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+                            iframe { border: none; width: 100%; height: 100%; }
+                        </style>
+                    </head>
+                    <body>
+                        <iframe src="${contentUrlToCloak}" allowfullscreen></iframe>
+                        <button id="home-button" style="
+                            position: fixed; top: 10px; left: 10px; padding: 10px 20px; font-weight: 700;
+                            border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px;
+                            background-color: rgba(255, 255, 255, 0.08); color: white;
+                            backdrop-filter: blur(6px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                            cursor: pointer; transition: all 0.3s ease; z-index: 9999;
+                        ">← Home</button>
+                    </body>
+                    </html>
+                `);
+                openedWindow.document.close();
+
+                openedWindow.addEventListener('load', () => {
+                    const homeButton = openedWindow.document.getElementById('home-button');
+                    if (homeButton) {
+                        homeButton.onmouseover = () => homeButton.style.backgroundColor = 'rgba(29, 187, 214, 0.25)';
+                        homeButton.onmouseout = () => homeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+                        homeButton.onclick = function() {
+                            const iframe = openedWindow.document.querySelector('iframe');
+                            if (iframe) {
+                                iframe.contentWindow.location.reload();
+                            }
+                        };
+                    }
+                });
+
+            } catch (e) {
+                console.error("Error writing to new window:", e);
+                openedWindow = window.open(contentUrlToCloak, '_blank');
+                if (openedWindow) {
+                    const messageBox = document.createElement('div');
+                    messageBox.className = 'message-box';
+                    messageBox.innerText = "Failed to cloak (security restrictions), opening directly.";
+                    document.body.appendChild(messageBox);
+                    setTimeout(() => document.body.removeChild(messageBox), 5000);
+                }
+            }
+        };
+
+        browserIframe.addEventListener('load', () => {
+            try {
+
+                updateDisplayedUrl(browserIframe.src);
+            } catch (e) {
+                updateDisplayedUrl("Cross-origin content (URL hidden for security)");
+            }
+        });
+
+            refreshBtn.addEventListener('click', refreshIframe);
+            fullscreenButton.addEventListener('click', requestIframeFullscreen);
+
+            urlSelect.addEventListener('change', (event) => {
+                const selectedUrl = event.target.value;
+                if (selectedUrl) {
+                    browserIframe.src = selectedUrl;
+                } else {
+                    browserIframe.src = 'about:blank';
+                }
+            });
+
+        setTimeout(() => {
+            splashScreen.classList.add('hidden');
+            splashScreen.addEventListener('transitionend', () => {
+                splashScreen.style.display = 'none';
+                mainContent.style.visibility = 'visible';
+                bottomBar.style.visibility = 'visible';
+            }, { once: true });
+        }, 2000);
+
+            populateUrlDropdown();
+            initialLoad(); 
+        });
+
+const notch = document.getElementById('bottom-notch');
+const bottomBar = document.querySelector('.bottom-bar');
+const iframeWrapper = document.querySelector('.iframe-wrapper');
+const notchIcon = notch.querySelector('i');
+
+notch.addEventListener('click', () => {
+    const isOpen = bottomBar.classList.toggle('show');
+    notch.classList.toggle('open');
+    iframeWrapper.style.bottom = isOpen ? '60px' : '0';
+
+    if (isOpen) {
+        notchIcon.classList.remove('fa-chevron-up');
+        notchIcon.classList.add('fa-chevron-down');
+    } else {
+        notchIcon.classList.remove('fa-chevron-down');
+        notchIcon.classList.add('fa-chevron-up');
+    }
+});
+
+</script>
+<script src="/js/overlay.js"></script>
+<script src="/js/log.js"></script>
+</body>
+</html>

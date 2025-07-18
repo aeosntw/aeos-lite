@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aeos Lite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="/assets/fonts/Inter.css" rel="stylesheet">
+    <link rel="stylesheet" href="/lib/fa/css/all.min.css">
+    <style>
+* {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            overflow: hidden;
+            background-image: url('/assets/img/Aeos Background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 70px;
+            background-color: rgba(0, 0, 0, 0.5); 
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            padding: 10px 0; 
+            height: 100vh; 
+            position: relative;
+            justify-content: flex-start; 
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+        }
+        
+        .sidebar-logo img {
+            width: 100%; 
+            height: 100%;
+            object-fit: contain; 
+        }
+
+        .sidebar-icons {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            flex-grow: 1; 
+            gap: 20px; 
+            width: 100%;
+        }
+
+        .sidebar-item {
+            width: 100%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-item i {
+            font-size: 1.2rem;
+        }
+
+        
+        .content-area {
+            flex-grow: 1; 
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; 
+        }
+
+        .content-area iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/assets/img/logos/Aeos.png" alt="Aeos Logo">
+        </div>
+        <div class="sidebar-icons">
+            <div class="sidebar-item" id="home-button" title="Home">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="sidebar-item" id="games-button" title="Games">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <div class="sidebar-item" id="apps-button" title="Apps">
+                <i class="fas fa-grid-2"></i>
+            </div>
+            <div class="sidebar-item" id="settings-button" title="Settings">
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-area" id="content-area">
+        </div>
+		
+<script src="assets/js/log.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+            const homeButton = document.getElementById('home-button');
+            const gamesButton = document.getElementById('games-button');
+            const appsButton = document.getElementById('apps-button');
+            const settingsButton = document.getElementById('settings-button'); 
+            const contentArea = document.getElementById('content-area');
+
+            function loadContent(url) {
+                contentArea.innerHTML = ''; 
+                const iframe = document.createElement('iframe');
+                iframe.src = url;
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('frameborder', '0');
+                contentArea.appendChild(iframe);
+            }
+
+            loadContent('/home.html');
+
+            homeButton.addEventListener('click', () => {
+                loadContent('/home.html');
+            });
+
+            gamesButton.addEventListener('click', () => {
+                loadContent('/gms.html');
+            });
+
+            appsButton.addEventListener('click', () => {
+                loadContent('/apps.html');
+            });
+
+            settingsButton.addEventListener('click', () => {
+                loadContent('/settings.html'); 
+            });
+        });
+    </script>
+
+</body>
+</html>

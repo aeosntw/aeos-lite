@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Watch TV Show</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background-color: #0d0d0d;
+      color: white;
+    }
+
+    #tab {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #aaa;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      border-radius: 0 0 10px 10px;
+      cursor: pointer;
+      text-align: center;
+      z-index: 100;
+      transition: top 0.4s ease, border-radius 0.4s ease, background 0.3s;
+    }
+
+    #tab:hover {
+      background: #333;
+    }
+
+    #drawer {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      display: flex;
+      gap: 1rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #222;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+      transition: transform 0.4s ease;
+      z-index: 99;
+    }
+
+    #drawer.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #drawer.visible + #tab {
+      top: 64px;
+      border-radius: 10px;
+    }
+
+    select {
+      background: #1a1a1a;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 1rem;
+      min-width: 120px;
+      cursor: pointer;
+    }
+
+    #status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      color: #aaa;
+      text-align: center;
+      z-index: 1;
+    }
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    iframe.loaded {
+      display: block;
+      opacity: 1;
+    }
+
+    .error {
+      color: #ff4f4f;
+    }
+
+    @media (max-width: 600px) {
+      #drawer {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="tab">Seasons & Episodes</div>
+  <div id="drawer">
+    <select id="seasonSelector"></select>
+    <select id="episodeSelector"></select>
+    <select id="sourceSelector"></select> </div>
+  <div id="status">Loading player...</div>
+
+  <script>
+    const apiKey = "2713804610e1e236b1cf44bfac3a7776";
+    const movieId = new URLSearchParams(location.search).get("id");
+
+    const status = document.getElementById("status");
+    const seasonSelector = document.getElementById("seasonSelector");
+    const episodeSelector = document.getElementById("episodeSelector");
+    const sourceSelector = document.getElementById("sourceSelector");
+    const drawer = document.getElementById("drawer");
+    const tab = document.getElementById("tab");
+
+    let currentProviderIndex = 0;
+    let timeout;
+    let iframe;
+    let showData;
+
+    const providers = [
+      { name: "Auto (Recommended)", url: "" },
+      { name: "vidsrc.in", url: "https://vidsrc.in/embed/tv/" },
+      { name: "vidsrc.pm", url: "https://vidsrc.pm/embed/tv/" },
+      { name: "vidsrc.net", url: "https://vidsrc.net/embed/tv/" },
+      { name: "vidsrc.xyz", url: "https://vidsrc.xyz/embed/tv/" },
+      { name: "vidsrc.io", url: "https://vidsrc.io/embed/tv/" },
+      { name: "vidsrc.vc", url: "https://vidsrc.vc/embed/tv/" },
+      { name: "2embed.cc", url: "https://www.2embed.cc/embedtv/" },
+      { name: "2embed.skin", url: "https://www.2embed.skin/embedtv/" },
+      { name: "vidsrc.cc v2", url: "https://vidsrc.cc/v2/embed/tv/" },
+      { name: "vidsrc.cc v3", url: "https://vidsrc.cc/v3/embed/tv/" }
+    ];
+
+    async function fetchShowData() {
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}?api_key=${apiKey}`);
+        const data = await res.json();
+        showData = data;
+        populateSeasonSelector(data.seasons);
+        populateSourceSelector();
+        loadSeason(data.seasons[0].season_number);
+      } catch (err) {
+        status.innerHTML = `<span class="error">Failed to fetch show info from TMDb.</span>`;
+      }
+    }
+
+    async function populateSeasonSelector(seasons) {
+      seasonSelector.innerHTML = "";
+      for (const season of seasons) {
+        if (season.season_number === 0) continue;
+        const option = document.createElement("option");
+        option.value = season.season_number;
+        option.textContent = `Season ${season.season_number}`;
+        seasonSelector.appendChild(option);
+      }
+    }
+
+    function populateSourceSelector() {
+      sourceSelector.innerHTML = "";
+      providers.forEach((provider, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = provider.name;
+        sourceSelector.appendChild(option);
+      });
+      sourceSelector.value = 0;
+    }
+
+    async function populateEpisodeSelector(seasonNumber) {
+      episodeSelector.innerHTML = "";
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/tv/${movieId}/season/${seasonNumber}?api_key=${apiKey}`);
+        const data = await res.json();
+        for (let i = 1; i <= data.episodes.length; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = `Episode ${i}`;
+          episodeSelector.appendChild(option);
+        }
+      } catch {
+        status.innerHTML = `<span class="error">Failed to fetch episodes for season ${seasonNumber}.</span>`;
+      }
+    }
+
+    function buildProviderUrl(providerIndex, season, episode) {
+        const provider = providers[providerIndex];
+        if (!provider || provider.url === "") return null;
+
+        if (provider.name.includes("2embed")) {
+            return `${provider.url}${movieId}&s=${season}&e=${episode}`;
+        } else if (provider.url.startsWith("https://vidsrc.cc/")) {
+           const version = provider.url.includes('/v2/') ? 'v2' : 'v3';
+           return `https://vidsrc.cc/${version}/embed/tv/${movieId}/${season}/${episode}/`;
+        } else if (provider.url.startsWith("https://vidsrc.")) {
+            return `${provider.url.replace('/embed/tv/', '/embed/tv')}?tmdb=${movieId}&season=${season}&episode=${episode}&ds_lang=en`;
+        }
+        else {
+            return `${provider.url}${movieId}/${season}-${episode}`;
+        }
+    }
+
+    function loadVideo(season, episode, selectedProviderIndex = 0) {
+        clearTimeout(timeout);
+        if (iframe) iframe.remove();
+
+        status.style.display = "block";
+        status.innerText = `Loading Season ${season}, Episode ${episode}...`;
+
+        const selectedProvider = providers[selectedProviderIndex];
+
+        if (selectedProvider.url === "") {
+            currentProviderIndex = 1;
+            tryNextAutoProvider(season, episode);
+        } else {
+            const url = buildProviderUrl(selectedProviderIndex, season, episode);
+            if (url) {
+                status.innerHTML = `Loading from ${selectedProvider.name}...`;
+                createAndLoadIframe(url, season, episode, selectedProviderIndex, false);
+            } else {
+                status.innerHTML = `<span class="error">Invalid source selected.</span>`;
+            }
+        }
+    }
+
+    function tryNextAutoProvider(season, episode) {
+        if (currentProviderIndex >= providers.length) {
+            status.innerHTML = `<span class="error">Failed to load the video from all sources.</span>`;
+            return;
+        }
+
+        const provider = providers[currentProviderIndex];
+        if (provider.url === "") {
+            currentProviderIndex++;
+            tryNextAutoProvider(season, episode);
+            return;
+        }
+
+        const src = buildProviderUrl(currentProviderIndex, season, episode);
+        status.innerHTML = `Trying source ${currentProviderIndex} of ${providers.length - 1} (${provider.name})...`;
+
+        createAndLoadIframe(src, season, episode, currentProviderIndex, true);
+    }
+
+function createAndLoadIframe(src, season, episode, providerIndex, autoCycling) {
+    if (iframe) iframe.remove();
+    iframe = document.createElement("iframe");
+    iframe.src = src;
+
+    // ✅ Enable fullscreen support
+    iframe.allowFullscreen = true;
+    iframe.setAttribute("allow", "fullscreen");
+
+    iframe.onload = () => {
+        clearTimeout(timeout);
+        status.style.display = "none";
+        iframe.classList.add("loaded");
+    };
+
+    iframe.onerror = () => {
+        clearTimeout(timeout);
+        if (autoCycling) {
+            currentProviderIndex++;
+            tryNextAutoProvider(season, episode);
+        } else {
+            status.innerHTML = `<span class="error">Failed to load from ${providers[providerIndex].name}. Please try another source.</span>`;
+        }
+    };
+
+    document.body.appendChild(iframe);
+
+    timeout = setTimeout(() => {
+        iframe.remove();
+        if (autoCycling) {
+            currentProviderIndex++;
+            tryNextAutoProvider(season, episode);
+        } else {
+            status.innerHTML = `<span class="error">Loading timed out for ${providers[providerIndex].name}. Please try another source.</span>`;
+        }
+    }, 5000);
+}
+
+    function loadSeason(season) {
+      populateEpisodeSelector(season).then(() => {
+        loadVideo(season, 1, parseInt(sourceSelector.value));
+      });
+    }
+
+    seasonSelector.addEventListener("change", () => {
+      const season = parseInt(seasonSelector.value);
+      episodeSelector.value = 1;
+      loadVideo(season, 1, parseInt(sourceSelector.value));
+    });
+
+    episodeSelector.addEventListener("change", () => {
+      const season = parseInt(seasonSelector.value);
+      const episode = parseInt(episodeSelector.value);
+      loadVideo(season, episode, parseInt(sourceSelector.value));
+    });
+
+    sourceSelector.addEventListener("change", () => {
+        const season = parseInt(seasonSelector.value);
+        const episode = parseInt(episodeSelector.value);
+        loadVideo(season, episode, parseInt(sourceSelector.value));
+    });
+
+    tab.addEventListener("click", () => {
+      drawer.classList.toggle("visible");
+      if (drawer.classList.contains("visible")) {
+        tab.style.top = "64px";
+        tab.style.borderRadius = "10px";
+      } else {
+        tab.style.top = "0";
+        tab.style.borderRadius = "0 0 10px 10px";
+      }
+    });
+
+    if (!movieId) {
+      status.innerHTML = `<span class="error">No TV show ID provided. Add ?id=XXXX to the URL.</span>`;
+    } else {
+      fetchShowData();
+    }
+  </script>
+</body>
+</html>

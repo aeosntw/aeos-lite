@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Domain & Path Category Checker</title>
+  <style>
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+
+.container {
+  background: white;
+  padding: 2rem;
+  padding-top: 4rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+      margin-bottom: 0.6rem;
+      text-align: center;
+    }
+	
+    p {
+      margin-top: 0;
+      color: #333;
+      margin-bottom: 0.9rem;
+      text-align: center;
+    }
+
+    #domain {
+      font-size: 16px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+
+    #domain:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    button {
+      font-size: 16px;
+      padding: 0.75rem;
+      width: 100%;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 1.5rem;
+    }
+
+    .result-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .full-width-block {
+      width: 100%;
+    }
+
+    .grid-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .info-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      flex: 1 1 600px;
+      min-width: 0;
+    }
+
+    .info-block {
+      background: #f9f9f9;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-grid .info-block {
+      flex: 1 1 240px;
+    }
+
+    .info-title {
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-content {
+      color: #222;
+    }
+
+    .rating-panel {
+      flex: 0 0 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1rem;
+      background: #e9f0fc;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      height: fit-content;
+    }
+
+    .rating-panel .rating-badge {
+      font-size: 3rem;
+      width: 100px;
+      height: 100px;
+      margin-bottom: 0.5rem;
+      background: #007bff;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+    }
+
+    .footer-block {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .footer-block .allow-message {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .allowed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .blocked {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .query-count {
+      color: #888;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .debug-switch {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #333;
+      background: white;
+      padding: 4px 8px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .debug-switch input[type="checkbox"] {
+      appearance: none;
+      width: 40px;
+      height: 20px;
+      background: #ccc;
+      border-radius: 20px;
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-right: 8px;
+    }
+
+    .debug-switch input[type="checkbox"]::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s;
+    }
+
+    .debug-switch input[type="checkbox"]:checked {
+      background: #007bff;
+    }
+
+    .debug-switch input[type="checkbox"]:checked::before {
+      transform: translateX(20px);
+    }
+
+    .description-output {
+      margin-top: 1rem;
+      font-style: italic;
+      font-size: 0.95rem;
+      text-align: center;
+      color: #333;
+      background: #eef3f8;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+	
+	.button-row.inline {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.button-row.inline button {
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  background: #a855f7;
+}
+
+.button-row.inline button:hover {
+  background: #a855f7;
+}
+
+.sparkle-btn {
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.4rem;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sparkle-btn:hover {
+  background: #9333ea;
+  transform: scale(1.03);
+}
+
+.sparkle-btn:active {
+  transform: scale(0.97);
+}
+
+.safety-table-box {
+  background: #fff4d6;
+  border-left: 6px solid #f0ad4e;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 1.5rem;
+  box-sizing: border-box;
+}
+
+.result-panel > .safety-table-box {
+  width: 100%;
+}
+
+.safety-table-box h3 {
+  margin-top: 0;
+  color: #a25c00;
+  font-size: 1.25rem;
+}
+
+.safety-table-box p {
+  margin: 0.5rem 0 0;
+  color: #5a4500;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+#domain,
+.button-row button {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+}
+
+.button-row.inline {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+  </style>
+
+  <script src="list.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Lightspeed Block Checker</h2>
+	<p>Created by Aeos</p>
+	<p>Check if pages are blocked without triggering Lightspeed</p>
+    <label class="debug-switch">
+      <input type="checkbox" id="debugMode" />
+      Debug mode
+    </label>
+    <input type="text" id="domain" placeholder="Enter your URL..." />
+<div class="button-row">
+  <button onclick="checkDomain()">Check</button>
+</div>
+
+<div id="result"></div>
+
+<div class="button-row inline">
+  <button class="sparkle-btn" onclick="generateDescription()">✨ Generate description</button>
+</div>
+
+<div id="description" class="description-output" style="display:none;"></div>
+
+  </div>
+
+  <script>
+    let lastData = null;
+    let lastMatch = null;
+    let lastQueryCount = 0;
+    let lastAction = '';
+    let lastCategoryId = -1;
+    let lastReason = '';
+
+    async function lookupDomain(domain) {
+      const body = {
+        query: `
+          query getDeviceCategorization($itemA: CustomHostLookupInput!) {
+            a: custom_HostLookup(item: $itemA) {
+              request { host }
+              cat
+              action
+              source_ip
+              archive_info {
+                filter {
+                  category
+                  transTime
+                  reason
+                  isSafetyTable
+                  isTLD
+                }
+                rocket {
+                  category
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          itemA: { hostname: domain, getArchive: true }
+        }
+      };
+
+      const res = await fetch("https://production-archive-proxy-api.lightspeedsystems.com/archiveproxy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Origin": "https://archive.lightspeedsystems.com",
+          "Referer": "https://archive.lightspeedsystems.com/",
+          "User-Agent": "Mozilla/5.0",
+          "x-api-key": "onEkoztnFpTi3VG7XQEq6skQWN3aFm3h"
+        },
+        body: JSON.stringify(body)
+      });
+
+      const json = await res.json();
+      return json.data?.a;
+    }
+
+    function getParentDomains(domain) {
+      const domainOnly = domain.split('/')[0];
+      const parts = domainOnly.split('.');
+      const parents = [];
+      for (let i = 1; i < parts.length - 1; i++) {
+        parents.push(parts.slice(i).join('.'));
+      }
+      return parents;
+    }
+
+    function extractBaseDomain(input) {
+      let domain = input.replace(/^https?:\/\//, '');
+      domain = domain.split('/')[0];
+      domain = domain.split(':')[0];
+      return domain;
+    }
+
+    async function checkDomain() {
+      const input = document.getElementById('domain').value.trim();
+      const result = document.getElementById('result');
+      document.getElementById('description').style.display = 'none';
+      if (!input) {
+        result.innerHTML = "Please enter a domain or URL.";
+        return;
+      }
+
+      result.innerHTML = "Checking...";
+
+      try {
+        let domain = extractBaseDomain(input);
+        let path = input.includes('/') ? input.substring(input.indexOf('/')) : '';
+        let queryCount = 0;
+        let data = null;
+        let categoryId = -1;
+        let foundMatch = false;
+
+        if (path) {
+          data = await lookupDomain(`${domain}${path}`);
+          queryCount++;
+          if (data) {
+            categoryId = parseInt(data.archive_info?.filter?.category) || -1;
+            if (categoryId !== -1) foundMatch = true;
+          }
+        }
+
+        if (!foundMatch) {
+          data = await lookupDomain(domain);
+          queryCount++;
+          if (data) {
+            categoryId = parseInt(data.archive_info?.filter?.category) || -1;
+            if (categoryId !== -1) foundMatch = true;
+          }
+        }
+
+        if (!foundMatch) {
+          const parentDomains = getParentDomains(domain);
+          for (const parent of parentDomains) {
+            data = await lookupDomain(parent);
+            queryCount++;
+            if (data) {
+              categoryId = parseInt(data.archive_info?.filter?.category) || -1;
+              if (categoryId !== -1) {
+                foundMatch = true;
+                break;
+              }
+            }
+          }
+        }
+
+        if (!data) {
+          result.innerHTML = "Error: No data returned from API";
+          return;
+        }
+
+        const action = data.action || 'Unknown';
+        const reason = data.archive_info?.filter?.reason || 'Unknown';
+        const match = P_.find(c => c.CategoryNumber === categoryId);
+
+        if (foundMatch && match) {
+          lastData = data;
+          lastMatch = match;
+          lastQueryCount = queryCount;
+          lastAction = action;
+          lastCategoryId = categoryId;
+          lastReason = reason;
+
+          renderResult();
+        } else {
+          result.innerHTML = `
+            <div class="query-count">Ran ${queryCount} queries</div>
+            <div><b>Site:</b> ${data.request.host}</div>
+            <div><b>Action:</b> ${action}</div>
+            <div><b>Category ID:</b> ${categoryId} (not found in list)</div>
+            <div><b>Reason:</b> ${reason}</div>
+          `;
+        }
+      } catch (err) {
+        console.error(err);
+        result.innerHTML = "Error: " + (err.message || "Unknown error occurred");
+      }
+    }
+
+function renderResult() {
+  const result = document.getElementById('result');
+  const debugMode = document.getElementById('debugMode').checked;
+
+  if (!lastData || !lastMatch) return;
+
+  const allowMessage = lastMatch.Allow == 0
+    ? `<div class="allow-message blocked">This content is blocked by Lightspeed</div>`
+    : `<div class="allow-message allowed">This content is allowed by Lightspeed</div>`;
+
+  const isSafetyTable = lastData.archive_info?.filter?.isSafetyTable;
+
+  const safetyTableMessage = isSafetyTable ? `
+    <div class="safety-table-box">
+      <h3>This domain is in the Safety Table and cannot be recategorized</h3>
+      <p>
+        The Safety Table process is designed to protect domains from accidental recategorization.
+        The category for domains like google.com, amazon.com, and paypal.com are hard coded into the Safety Table.
+        All manual or automatic categorization changes on the master database are checked against the Safety Table prior to the update being released,
+        changes for the domains that conflict with the Safety Table are discarded.
+        The Safety Table is only changed by manual process after careful review and consideration.
+      </p>
+    </div>
+  ` : '';
+
+  result.innerHTML = `
+    <div class="query-count">Ran ${lastQueryCount} queries</div>
+
+    <div class="result-panel">
+      <div class="info-block full-width-block">
+        <div class="info-title">Site</div>
+        <div class="info-content">${lastData.request.host}</div>
+      </div>
+
+      <div class="grid-section">
+        <div class="info-grid">
+          ${debugMode ? `
+            <div class="info-block">
+              <div class="info-title">Action</div>
+              <div class="info-content">${lastAction}</div>
+            </div>
+            <div class="info-block">
+              <div class="info-title">Category ID</div>
+              <div class="info-content">${lastCategoryId}</div>
+            </div>` : ''}
+
+          <div class="info-block">
+            <div class="info-title">Category</div>
+            <div class="info-content">${lastMatch.CategoryName}</div>
+          </div>
+
+          <div class="info-block">
+            <div class="info-title">Description</div>
+            <div class="info-content">${lastMatch.CategoryDescription}</div>
+          </div>
+
+          <div class="info-block">
+            <div class="info-title">Reason</div>
+            <div class="info-content">${lastReason}</div>
+          </div>
+        </div>
+
+        <div class="rating-panel">
+          <div class="rating-badge">${lastMatch.ContentRating || '-'}</div>
+        </div>
+      </div>
+
+      ${safetyTableMessage}
+
+      <div class="footer-block">
+        ${allowMessage}
+      </div>
+    </div>
+  `;
+}
+
+    function generateDescription() {
+      const output = document.getElementById('description');
+      if (!lastData || !lastMatch) {
+        output.innerText = "No data available. Please check a domain first.";
+        output.style.display = 'block';
+        return;
+      }
+
+      const site = lastData.request.host;
+      const allowed = lastMatch.Allow == 0 ? "blocked" : "allowed";
+      const category = lastMatch.CategoryName;
+      const desc = lastMatch.CategoryDescription;
+      const rating = lastMatch.ContentRating || "-";
+
+      output.innerText = `The site ${site} is ${allowed} because it is categorized as ${category}. This category is "${desc.toLowerCase()}". ${site} is rated ${rating}.`;
+      output.style.display = 'block';
+    }
+
+    document.getElementById('debugMode').addEventListener('change', renderResult);
+  </script>
+</body>
+</html>

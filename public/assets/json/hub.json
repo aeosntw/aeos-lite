@@ -1,0 +1,169 @@
+{
+  "title": "All Games",
+  "description": "",
+  "logoUrl": "/assets/img/logos/Aeos.png",
+  "games": [
+    {
+      "title": "Request a game",
+      "imageUrl": "/assets/img/games/google-form.png",
+      "genre": "Miscellanous",
+      "url": "https://docs.google.com/forms/d/e/1FAIpQLSe9Y622pCadaHOgZ_2LZZtA7QMLZshPwDvG4ZGd_4d83p4cLQ/viewform?usp=dialog"
+    },
+    {
+      "title": "People Playground",
+      "imageUrl": "/assets/img/games/people-playground.jpg",
+      "genre": "Sandbox",
+      "url": "/launch.html#/assets/games/people-playground"
+    },
+    {
+      "title": "Undertale",
+      "imageUrl": "/assets/img/games/undertale.jpg",
+      "genre": "RPG",
+      "url": "/launch.html#/assets/games/undertale"
+    },
+    {
+      "title": "Deltarune",
+      "imageUrl": "/assets/img/games/deltarune.jpg",
+      "genre": "RPG",
+      "url": "/launch.html#/assets/games/deltarune"
+    },
+    {
+      "title": "FNAF (All Games 1-4+UCN/PS)",
+      "imageUrl": "/assets/img/games/fnaf-all.jpg",
+      "genre": "Horror",
+      "url": "/launch.html#https://fnaf-united.web.app/launcher"
+    },
+    {
+      "title": "10 Minutes Till Dawn",
+      "imageUrl": "/assets/img/games/10-minutes-till-dawn.png",
+      "genre": "Survival",
+      "url": "/launch.html#/assets/games/10-minutes-till-dawn"
+    },
+    {
+      "title": "Crazy Cattle 3D (+Extras!)",
+      "imageUrl": "/assets/img/games/crazy-cattle-3d.png",
+      "genre": "Survival",
+      "url": "/gms/cc3d.html"
+    },
+    {
+      "title": "Geometry Dash Lite",
+      "imageUrl": "/assets/img/games/geodash.webp",
+      "genre": "Platformer",
+      "url": "/launch.html#/assets/games/geometry-dash-lite"
+    },
+    {
+      "title": "Space Waves",
+      "imageUrl": "/assets/img/games/space-waves.avif",
+      "genre": "Platformer",
+      "url": "/launch.html#/assets/games/space-waves"
+    },
+    {
+      "title": "Football Bros",
+      "imageUrl": "/assets/img/games/football-bros.jpg",
+      "genre": "Sports",
+      "url": "/launch.html#/assets/games/football-bros"
+    },
+    {
+      "title": "Block Blast",
+      "imageUrl": "/assets/img/games/block-blast.png",
+      "genre": "Puzzle",
+      "url": "/gms/block-blast.html"
+    },
+    {
+      "title": "The Binding of Isaac [Full Game!]",
+      "imageUrl": "/assets/img/games/the-binding-of-isaac.jpg",
+      "genre": "Adventure",
+      "url": "/gms/the-binding-of-isaac.html"
+    },
+    {
+      "title": "Polytrack",
+      "imageUrl": "/assets/img/games/polytrack.jpg",
+      "genre": "Driving",
+      "url": "/gms/polytrack.html"
+    },
+    {
+      "title": "Retro Bowl",
+      "imageUrl": "/assets/img/games/retro-bowl.avif",
+      "genre": "Sports",
+      "url": "/launch.html#/assets/games/retro-bowl"
+    },
+    {
+      "title": "Recoil",
+      "imageUrl": "/assets/img/games/recoil.webp",
+      "genre": "Platformer",
+      "url": "/launch.html#/assets/games/recoil"
+    },
+    {
+      "title": "Ragdoll Hit",
+      "imageUrl": "/assets/img/games/ragdoll-hit.webp",
+      "genre": "Sandbox",
+      "url": "/launch.html#/assets/games/ragdoll-hit"
+    },
+    {
+      "title": "Idle Digging Tycoon",
+      "imageUrl": "/assets/img/games/idle-digging-tycoon.jpg",
+      "genre": "Idle",
+      "url": "/launch.html#/assets/games/idle-digging-tycoon"
+    },
+    {
+      "title": "Eaglercraft [Minecraft 1.12 and more]",
+      "imageUrl": "/assets/img/games/mc.jpg",
+      "genre": "Sandbox",
+      "url": "/launch.html#https://ampler.web.app"
+    },
+    {
+      "title": "Tiny Fishing",
+      "imageUrl": "/assets/img/games/tiny-fishing.jpg",
+      "genre": "Idle",
+      "url": "/launch.html#/assets/games/tiny-fishing"
+    },
+    {
+      "title": "Idle Lumber Inc",
+      "imageUrl": "/assets/img/games/idle-lumber-inc.jpg",
+      "genre": "Idle",
+      "url": "/launch.html#/assets/games/idle-lumber-inc"
+    },
+    {
+      "title": "Little Chef",
+      "imageUrl": "/assets/img/games/little-chef.png",
+      "genre": "Sandbox",
+      "url": "/launch.html#/assets/games/little-chef"
+    },
+    {
+      "title": "Townscaper",
+      "imageUrl": "/assets/img/games/townscaper.jpg",
+      "genre": "Sandbox",
+      "url": "/launch.html#/assets/games/townscaper"
+    },
+    {
+      "title": "We Become What We Behold",
+      "imageUrl": "/assets/img/games/we-become-what-we-behold.png",
+      "genre": "Horror",
+      "url": "/launch.html#/assets/games/we-become-what-we-behold"
+    },
+    {
+      "title": "Henry Stickmin",
+      "imageUrl": "/assets/img/games/henry-stickmin.webp",
+      "genre": "Survival",
+      "url": "/gms/henry-stickmin.html"
+    },
+    {
+      "title": "slowroads.io",
+      "imageUrl": "/assets/img/games/slow-roads.jpg",
+      "genre": "Driving",
+      "url": "/launch.html#/assets/games/slow-roads"
+    },
+    {
+      "title": "Blackjack",
+      "imageUrl": "/assets/img/games/blackjack.jpg",
+      "genre": "Gambling",
+      "url": "/launch.html#/assets/games/blackjack"
+    },
+    {
+      "title": "Poker",
+      "imageUrl": "/assets/img/games/poker.webp",
+      "genre": "Gambling",
+      "url": "/launch.html#/assets/games/poker"
+    }
+  ]
+}
