@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Loading...</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: #888;
+    }
+
+    #hiddenFrame {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div>Loading VM...</div>
+
+  <iframe id="hiddenFrame"></iframe>
+
+  <script>
+    const hiddenFrame = document.getElementById("hiddenFrame");
+    const targetUrl = "/prox/uv?url=https://demo-api.tutturu.workers.dev/";
+
+    let attempts = 0;
+    const maxAttempts = 15;
+    const delayBetweenAttempts = 1000;
+
+    function tryParseJSON() {
+      try {
+        const doc = hiddenFrame.contentDocument || hiddenFrame.contentWindow.document;
+        const text = doc.documentElement.textContent.trim();
+
+        if (!text || text.length < 5) throw new Error("Empty or incomplete JSON");
+
+        const json = JSON.parse(text);
+        if (!json.url) throw new Error("Missing url");
+
+        const forwardUrl = `/prox/uv?url=${encodeURIComponent(json.url)}`;
+        const warnUrl = `/pages/warn.html?forward=${encodeURIComponent(forwardUrl)}&original=${encodeURIComponent(json.url)}`;
+
+        window.location.replace(warnUrl);
+      } catch (err) {
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(tryParseJSON, delayBetweenAttempts);
+        } else {
+          console.error("Failed to parse iframe JSON:", err);
+          document.body.innerText = "Error loading VM session.";
+        }
+      }
+    }
+
+    hiddenFrame.onload = () => {
+      setTimeout(tryParseJSON, 1500);
+    };
+
+    hiddenFrame.src = targetUrl;
+  </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scramjet Embed</title>
+    <link rel="prefetch" href="/prox/scram/scramjet.worker.js" />
+    <link rel="prefetch" href="/prox/scram/scramjet.shared.js" />
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dreamland"></script>
+    <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0b0c2a 0%, #0a0a23 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      color: #ffffff;
+      position: relative;
+    }
+
+    .moon {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      width: 100px;
+      height: 100px;
+      background: #f1f1f1;
+      border-radius: 50%;
+      box-shadow: 0 0 30px #f1f1f1, 0 0 60px #f1f1f1;
+      z-index: 2;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.85;
+      z-index: 1;
+      animation: flyRight linear infinite;
+    }
+
+    @keyframes flyRight {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(300vw);
+        opacity: 0;
+      }
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      filter: blur(8px);
+      animation: drift 60s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-300px); }
+      100% { transform: translateX(100vw); }
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 3;
+      text-align: center;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background-color: white;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    .dot:nth-child(3) { animation-delay: 0; }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+      } 
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .splash-text {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    .subtext {
+      font-size: 1rem;
+      color: #cccccc;
+      margin-top: 4px;
+    }
+	
+#iframe-container {
+  height: 100%;
+  width: 100%;
+}
+
+#iframe-container iframe {
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+    </style>
+    <script src="baremux/index.js"></script>
+    <script src="scram/scramjet.controller.js"></script>
+    <script src="config.js"></script>
+  </head>
+
+  <body>
+    <div class="stars"></div>
+<div id="loading-screen">
+  <div class="moon"></div>
+
+  <!-- Star generation -->
+  <script>
+    const starCount = 180;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      const top = Math.random() * 100;
+      const left = -Math.random() * 100;
+      const size = 2 + Math.random() * 3;
+      const duration = 2 + Math.random() * 2;
+      star.style.top = `${top}vh`;
+      star.style.left = `${left}vw`;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.animationDuration = `${duration}s`;
+      document.getElementById("loading-screen").appendChild(star);
+    }
+  </script>
+
+  <div class="cloud" style="top: 30vh; left: -200px; width: 200px; height: 60px;"></div>
+  <div class="cloud" style="top: 60vh; left: -400px; width: 300px; height: 80px;"></div>
+
+  <div class="loading-container">
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="splash-text" id="splashText">Loading...</div>
+    <div class="subtext">Deploying Unbl0cker...</div>
+  </div>
+</div>
+
+   <div id="iframe-container" style="display:none;"></div>
+<script src="/prox/globalconfigs.js"></script>
+<script>
+// Cookie utility functions
+function getCookie(name) {
+  const cookies = document.cookie.split('; ');
+  for (const c of cookies) {
+    if (c.startsWith(name + '=')) {
+      return decodeURIComponent(c.substring(name.length + 1));
+    }
+  }
+  return null;
+}
+
+function setCookie(name, value, seconds) {
+  const expires = new Date(Date.now() + seconds * 1000).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+}
+
+// Splash text control
+const splash = document.getElementById("splashText");
+const targetUrl = getCookie('target_url');
+
+// --- MODIFICATION START ---
+// Function to get query parameter
+function getQueryParameter(name) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    const results = regex.exec(window.location.href);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+const urlParam = getQueryParameter('url');
+
+if (targetUrl && decodeURIComponent(urlParam) === targetUrl) { // Updated to check urlParam
+  splash.textContent = "Service worker deployed, redirecting...";
+} else {
+  splash.textContent = splashMessages[Math.floor(Math.random() * splashMessages.length)];
+}
+
+// Store query parameter in cookie
+(() => {
+  const urlParamValue = getQueryParameter('url'); // Get the 'url' query parameter
+  if (urlParamValue) {
+    const cookieName = "target_url";
+    const exists = document.cookie.split('; ').some(c => c.startsWith(`${cookieName}=`));
+    if (!exists) {
+      setCookie(cookieName, urlParamValue, 20);
+    }
+  }
+})();
+// --- MODIFICATION END ---
+
+      // Initialize Scramjet
+      const scramjet = new ScramjetController({
+        files: {
+          wasm: "/prox/scram/scram/scramjet.wasm.wasm",
+          worker: "/prox/scram/scram/scramjet.worker.js",
+          client: "/prox/scram/scram/scramjet.client.js",
+          shared: "/prox/scram/scram/scramjet.shared.js",
+          sync: "/prox/scram/scram/scramjet.sync.js",
+        },
+      });
+
+      scramjet.init();
+      navigator.serviceWorker.register("./sw.js");
+
+      const connection = new BareMux.BareMuxConnection("/prox/scram/baremux/worker.js");
+      
+      const store = {
+        url: "https://",
+        wispurl:
+          _CONFIG?.wispurl ||
+          (location.protocol === "https:" ? "wss" : "ws") +
+            "://" +
+            location.host +
+            "/wisp/",
+        bareurl:
+          _CONFIG?.bareurl ||
+          (location.protocol === "https:" ? "https" : "http") +
+            "://" +
+            location.host +
+            "/bare/",
+        proxy: "",
+      };
+
+      // --- MODIFICATION START ---
+      async function loadFromQuery() { // Renamed function
+        const urlToLoad = getQueryParameter('url'); // Get 'url' from query parameter
+        
+        if (urlToLoad) {
+          let url = urlToLoad;
+          
+          if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+          }
+          
+          await waitForTransport();
+          
+          const frame = scramjet.createFrame();
+          document.getElementById("iframe-container").appendChild(frame.frame);
+          
+          frame.frame.onload = () => {
+            document.getElementById("loading-screen").style.display = "none";
+            document.getElementById("iframe-container").style.display = "block";
+          };
+          
+          frame.go(url);
+        } else {
+          await waitForTransport();
+          const frame = scramjet.createFrame();
+          document.getElementById("iframe-container").appendChild(frame.frame);
+          
+          frame.frame.onload = () => {
+            document.getElementById("loading-screen").style.display = "none";
+            document.getElementById("iframe-container").style.display = "block";
+          };
+          
+          frame.go("https://duckduckgo.com/");
+        }
+      }
+	  
+      async function waitForTransport() {
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        while (attempts < maxAttempts) {
+          try {
+            await connection.setTransport("/prox/scram/epoxy/index.mjs", [{ wisp: store.wispurl }]);
+            return;
+          } catch (e) {
+            try {
+              await connection.setTransport("/baremod/index.mjs", [store.bareurl]);
+              return;
+            } catch (e2) {
+              try {
+                await connection.setTransport("/libcurl/index.mjs", [{ wisp: store.wispurl }]);
+                return;
+              } catch (e3) {
+                attempts++;
+                if (attempts >= maxAttempts) {
+                  console.error("Failed to set any transport after", maxAttempts, "attempts");
+                  throw new Error("No bare clients available");
+                }
+                await new Promise(resolve => setTimeout(resolve, 100));
+              }
+            }
+          }
+        }
+      }
+
+      // If you want to handle changes to the query parameter without a full page reload,
+      // you would need a more advanced client-side routing solution or regularly poll the URL.
+      // For simplicity, we'll just load on initial page load.
+      window.addEventListener("load", async () => {
+        await loadFromQuery(); // Call the renamed function
+      });
+      // --- MODIFICATION END ---
+    </script>
+  </body>
+</html>

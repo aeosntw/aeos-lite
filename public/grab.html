@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Backup Tool</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --accent-color: #388E3C;
+      --bg-color: #f9f9f9;
+      --text-color: #333;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-color);
+    }
+
+    #importData {
+      display: none;
+    }
+
+    .note {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 20px;
+      max-width: 500px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Export / Import Your App Data</h1>
+
+  <a href="javascript:saveData()" class="btn">📤 Export Data</a>
+
+  <label for="importData" class="btn">📥 Import Data</label>
+  <input type="file" id="importData" onchange="loadData(event)"/>
+
+  <div class="note">
+    This will include localStorage, cookies, and IndexedDB.<br/>
+    Only works within the same origin.
+  </div>
+
+  <script>
+    async function saveData() {
+      const localData = JSON.stringify(localStorage);
+      const cookies = document.cookie;
+      const indexedDBData = await exportIndexedDB();
+
+      const fullData = JSON.stringify({
+        localStorage: localData,
+        cookies: cookies,
+        indexedDB: indexedDBData
+      });
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(new Blob([fullData], {
+        type: "application/json"
+      }));
+      link.download = `backup-${Date.now()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function loadData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        try {
+          const content = JSON.parse(e.target.result);
+
+          const localData = JSON.parse(content.localStorage);
+          for (let key in localData) {
+            localStorage.setItem(key, localData[key]);
+          }
+
+          const cookies = content.cookies.split("; ");
+          cookies.forEach(cookie => document.cookie = cookie);
+
+          await importIndexedDB(content.indexedDB);
+
+          alert("Data loaded successfully!");
+        } catch (err) {
+          console.error("Load error:", err);
+          alert("Failed to load data.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function exportIndexedDB() {
+      const dbs = await indexedDB.databases?.();
+      const output = {};
+
+      for (const dbInfo of dbs || []) {
+        const { name, version } = dbInfo;
+        if (!name) continue;
+
+        try {
+          const db = await new Promise((resolve, reject) => {
+            const req = indexedDB.open(name, version);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+          });
+
+          const dbDump = {};
+          const tx = db.transaction(db.objectStoreNames, "readonly");
+
+          for (const storeName of db.objectStoreNames) {
+            dbDump[storeName] = [];
+            const store = tx.objectStore(storeName);
+
+            const allItems = await new Promise((resolve, reject) => {
+              const items = [];
+              const cursor = store.openCursor();
+              cursor.onsuccess = (e) => {
+                const cur = e.target.result;
+                if (cur) {
+                  items.push({ key: cur.key, value: cur.value });
+                  cur.continue();
+                } else {
+                  resolve(items);
+                }
+              };
+              cursor.onerror = () => reject(cursor.error);
+            });
+
+            dbDump[storeName] = allItems;
+          }
+
+          output[name] = { version, data: dbDump };
+          db.close();
+        } catch (err) {
+          console.warn(`Error exporting ${name}:`, err);
+        }
+      }
+
+      return output;
+    }
+
+    async function importIndexedDB(dump) {
+      for (const dbName in dump) {
+        const { version, data } = dump[dbName];
+
+        const req = indexedDB.open(dbName, version);
+        req.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          for (const storeName in data) {
+            if (!db.objectStoreNames.contains(storeName)) {
+              db.createObjectStore(storeName, { keyPath: "key", autoIncrement: false });
+            }
+          }
+        };
+
+        req.onsuccess = () => {
+          const db = req.result;
+          const tx = db.transaction(Object.keys(data), "readwrite");
+
+          for (const storeName in data) {
+            const store = tx.objectStore(storeName);
+            data[storeName].forEach(entry => {
+              try {
+                store.put(entry.value, entry.key);
+              } catch (e) {
+                console.warn(`Error restoring entry in ${storeName}:`, e);
+              }
+            });
+          }
+
+          tx.oncomplete = () => db.close();
+        };
+
+        req.onerror = (e) => {
+          console.error(`Failed to open DB ${dbName}`, e);
+        };
+      }
+    }
+  </script>
+
+</body>
+</html>

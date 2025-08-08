@@ -52,49 +52,51 @@ function initializeHub(options) {
         });
     }
 
-    function renderGames() {
-        const gamesGrid = document.getElementById(gridId);
-        gamesGrid.innerHTML = '';
+function renderGames() {
+    const gamesGrid = document.getElementById(gridId);
+    gamesGrid.innerHTML = '';
 
-        let filteredGames = allGamesData;
+    let filteredGames = allGamesData;
 
-        if (currentFilter !== 'All') {
-            filteredGames = filteredGames.filter(game => game.genre === currentFilter);
-        }
-
-        if (currentSearchTerm) {
-            const searchTermLower = currentSearchTerm.toLowerCase();
-            filteredGames = filteredGames.filter(game =>
-                game.title.toLowerCase().includes(searchTermLower) ||
-                (game.description && game.description.toLowerCase().includes(searchTermLower)) ||
-                (game.genre && game.genre.toLowerCase().includes(searchTermLower))
-            );
-        }
-
-        if (filteredGames.length === 0) {
-            gamesGrid.innerHTML = '<p style="color: #a0a8ff; text-align: center; width: 100%; margin-top: 50px;">No items found matching your criteria.</p>';
-            return;
-        }
-
-        filteredGames.forEach(game => {
-            const gameCard = document.createElement('div');
-            gameCard.className = 'game-card';
-            gameCard.innerHTML = `
-                <div class="game-image" style="background-image: url('${game.imageUrl}')"></div>
-                <div class="game-info">
-                    <h3 class="game-title">${game.title}</h3>
-                    <div class="game-meta">
-                        <span class="game-genre">${game.genre}</span>
-                        <span class="game-rating">${'★'.repeat(Math.floor(game.rating))}${'☆'.repeat(5 - Math.floor(game.rating))}</span>
-                    </div>
-                    <button class="play-btn" onclick="window.location.href='${game.url}'">
-                        <i class="fas fa-play"></i> Play Now
-                    </button>
-                </div>
-            `;
-            gamesGrid.appendChild(gameCard);
-        });
+    if (currentFilter !== 'All') {
+        filteredGames = filteredGames.filter(game => game.genre === currentFilter);
     }
+
+    if (currentSearchTerm) {
+        const searchTermLower = currentSearchTerm.toLowerCase();
+        filteredGames = filteredGames.filter(game =>
+            game.title.toLowerCase().includes(searchTermLower) ||
+            (game.description && game.description.toLowerCase().includes(searchTermLower)) ||
+            (game.genre && game.genre.toLowerCase().includes(searchTermLower))
+        );
+    }
+
+    if (filteredGames.length === 0) {
+        gamesGrid.innerHTML = '<p style="color: #a0a8ff; text-align: center; width: 100%; margin-top: 50px;">No items found matching your criteria.</p>';
+        return;
+    }
+
+    filteredGames.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.className = 'game-card';
+        gameCard.setAttribute('data-title', game.title);
+gameCard.innerHTML = `
+    <div class="game-image" style="background-image: url('${game.imageUrl}')"></div>
+    <div class="game-info">
+        <h3 class="game-title">${game.title}</h3>
+        <div class="game-meta">
+            <span class="game-genre">${game.genre}</span>
+            <span class="game-rating">${'★'.repeat(Math.floor(game.rating))}${'☆'.repeat(5 - Math.floor(game.rating))}</span>
+        </div>
+    </div>
+`;
+
+gameCard.addEventListener('click', () => {
+    window.location.href = game.url;
+});
+        gamesGrid.appendChild(gameCard);
+    });
+}
 
     document.getElementById(searchInputId).addEventListener('input', (event) => {
         currentSearchTerm = event.target.value;

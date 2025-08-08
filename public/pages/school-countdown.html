@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summer Break Countdown</title>
+  <link rel="icon" href="https://iili.io/3rQyKGt.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+            body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            position: relative;
+            min-height: 100vh;
+            background-color: #1a1a2e;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://iili.io/3NCgnft.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            filter: brightness(0.8) contrast(1.2);
+        }
+
+        /* Particle effects */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Entry Animations */
+        @keyframes fadeInScaleUp {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8) rotateX(30deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotateX(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+            }
+            70% {
+                transform: scale(1.03);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+         @keyframes float {
+            0% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(-5px) translateX(5px);
+            }
+            50% {
+                transform: translateY(-10px) translateX(0px);
+            }
+            75% {
+                transform: translateY(-5px) translateX(-5px);
+            }
+            100% {
+                transform: translateY(0px) translateX(0px);
+            }
+        }
+
+
+        .countdown-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            perspective: 1000px;
+            z-index: 1;
+            padding: 40px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeInScaleUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .school-days-left {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 0.1s; /* Adjusted delay */
+        }
+
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .time-unit {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 30px; /* Increased padding to make it more square */
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-grow: 1;
+            max-width: 150px; /* Adjusted max-width */
+            aspect-ratio: 1; /* Added to enforce square aspect ratio */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-unit::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0) 50%,
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .time-unit:hover::before {
+            opacity: 1;
+            animation: shine 1.5s ease infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(30deg) translate(-30%, -30%);
+            }
+            100% {
+                transform: rotate(30deg) translate(30%, 30%);
+            }
+        }
+
+        /* Stagger entry animation for time units */
+        .time-unit:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+        .time-unit:nth-child(2) {
+            animation-delay: 0.45s;
+        }
+        .time-unit:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        .time-unit:nth-child(4) {
+            animation-delay: 0.75s;
+        }
+
+        .time-unit:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            background-color: rgba(255, 255, 255, 0.25);
+            /* Removed animation from here */
+        }
+
+
+        .time-unit span {
+            font-size: 3.8em;
+            font-weight: 700;
+            display: inline-block;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            /* Removed opacity and transform from here */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-unit .label {
+            font-size: 1.2em;
+            text-transform: uppercase;
+            opacity: 0.9;
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .event-title {
+            font-size: 2.8em;
+            font-weight: 600;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            margin-top: 20px;
+            color: #ffffff;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 1s;
+            position: relative;
+        }
+
+        .event-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+            animation-delay: 1.2s;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+            pointer-events: none; /* Ensure confetti doesn't interfere with mouse events */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .countdown-container {
+                width: 90%;
+                padding: 30px 20px;
+            }
+            .countdown {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .time-unit {
+                padding: 20px;
+                min-width: unset;
+                max-width: unset;
+                width: 100%;
+                 aspect-ratio: unset; /* Remove aspect ratio on smaller screens if needed */
+            }
+
+            .time-unit span {
+                font-size: 3.2em;
+            }
+
+            .event-title {
+                font-size: 2em;
+            }
+
+            .footer {
+                padding: 15px;
+            }
+        }
+
+        /* Celebration animation when countdown completes */
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+         @keyframes celebration-text {
+            0% {
+                transform: scale(0.8) rotateX(30deg);
+                opacity: 0;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                transform: scale(1.1) rotateX(0deg);
+                 opacity: 1;
+                 text-shadow: 0 0 30px rgba(255, 255, 255, 0.9);
+            }
+            100% {
+                transform: scale(1) rotateX(0deg);
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            }
+        }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="countdown-container">
+    <div class="countdown">
+      <div class="time-unit">
+        <span class="days"></span>
+        <div class="label">Days</div>
+      </div>
+      <div class="time-unit">
+        <span class="hours"></span>
+        <div class="label">Hours</div>
+      </div>
+      <div class="time-unit">
+        <span class="minutes"></span>
+        <div class="label">Minutes</div>
+      </div>
+      <div class="time-unit">
+        <span class="seconds"></span>
+        <div class="label">Seconds</div>
+      </div>
+    </div>
+    <div class="event-title">Until School Starts</div>
+  </div>
+
+  <footer class="footer">
+    Created by SuperUltraDude/Ultra Network
+  </footer>
+
+  <script>
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50; 
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+
+        const size = Math.random() * 7 + 2; 
+        const posX = Math.random() * window.innerWidth;
+        const posY = Math.random() * window.innerHeight;
+        const delay = Math.random() * 8; 
+        const duration = Math.random() * 15 + 10; 
+        const opacity = Math.random() * 0.8 + 0.2; 
+
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}px`;
+        particle.style.top = `${posY}px`;
+        particle.style.opacity = opacity;
+        particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+
+        particlesContainer.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    const eventDate = new Date("2025-09-01T08:12:00").getTime();
+    const countdownInterval = setInterval(function () {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+
+      const daysSpan = document.querySelector(".days");
+      const hoursSpan = document.querySelector(".hours");
+      const minutesSpan = document.querySelector(".minutes");
+      const secondsSpan = document.querySelector(".seconds");
+
+      const oldDays = daysSpan.innerHTML;
+      const oldHours = hoursSpan.innerHTML;
+      const oldMinutes = minutesSpan.innerHTML;
+      const oldSeconds = secondsSpan.innerHTML;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      function updateAndAnimateNumber(element, newValue, oldValue) {
+        if (newValue != oldValue) {
+          const clone = element.cloneNode(true);
+          clone.style.position = 'absolute';
+          clone.style.top = '0';
+          clone.style.left = '0';
+          clone.style.margin = '0';
+          clone.style.transform = 'translateY(0)';
+          clone.style.opacity = '1';
+          clone.style.width = '100%'; 
+          clone.style.textAlign = 'center'; 
+          element.parentNode.style.position = 'relative'; 
+          element.parentNode.appendChild(clone);
+
+          clone.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+          clone.style.transform = 'translateY(-30px)';
+          clone.style.opacity = '0';
+
+          element.innerHTML = newValue;
+          element.style.opacity = '1'; 
+          element.style.transform = 'translateY(0)'; 
+
+          setTimeout(() => {
+            clone.remove();
+          }, 400);
+        } else {
+          element.innerHTML = newValue;
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+        }
+      }
+
+      updateAndAnimateNumber(daysSpan, days, oldDays);
+      updateAndAnimateNumber(hoursSpan, hours, oldHours);
+      updateAndAnimateNumber(minutesSpan, minutes, oldMinutes);
+      updateAndAnimateNumber(secondsSpan, seconds, oldSeconds);
+
+      if (distance < 0) {
+        clearInterval(countdownInterval);
+        document.querySelector(".countdown").innerHTML = `
+          <div style="font-size: 3.5em; font-weight: 700; background: linear-gradient(135deg, #8aff8a, #ffff8a, #8a8aff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Welcome to the 25-26 school year!
+          </div>
+        `;
+        document.querySelector(".event-title").style.display = "none";
+        const footer = document.querySelector(".footer");
+        footer.innerHTML = "We hope you enjoy your year.";
+        footer.style.fontSize = "1.5em";
+        footer.style.color = "#ffff8a";
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bypass Warning</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      font-family: "Segoe UI", sans-serif;
+      color: white;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: fadeIn 0.5s ease, slideUp 0.6s ease;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 30px 40px;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      animation: popIn 0.5s ease;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .forward {
+      background-color: #00bcd4;
+      color: white;
+    }
+
+    .original {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); }
+      to { transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="panel">
+      <h1>Warning: Bypass Ahead!</h1>
+      <p>The following page uses a proxy (or unblocker) to ensure it is unblocked.<br>
+      Some filters may detect this.<br>You can open this content without a proxy, which is safer.</p>
+      <button id="forwardBtn" class="btn forward">Open with proxy</button>
+      <button id="originalBtn" class="btn original">Open without proxy</button>
+    </div>
+  </div>
+
+  <script>
+    function getParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    const forwardURL = getParam("forward");
+    const originalURL = getParam("original");
+
+    const forwardBtn = document.getElementById("forwardBtn");
+    const originalBtn = document.getElementById("originalBtn");
+
+    if (forwardURL) {
+      forwardBtn.onclick = () => window.location.href = forwardURL;
+    } else {
+      forwardBtn.disabled = true;
+      forwardBtn.style.opacity = 0.5;
+    }
+
+    if (originalURL) {
+      originalBtn.onclick = () => window.location.href = originalURL;
+    } else {
+      originalBtn.disabled = true;
+      originalBtn.style.opacity = 0.5;
+    }
+  </script>
+</body>
+</html>

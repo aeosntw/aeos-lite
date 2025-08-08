@@ -1,12 +1,9 @@
 *.wasm filter=lfs diff=lfs merge=lfs -text
 
-# For JavaScript files, force LF in repo and local (better cross-platform)
 *.js text eol=lf
 
-# For WASM files, treat as binary (no line ending changes)
 *.wasm binary
 
-# Other text files you want normalized to LF
 *.css text eol=lf
 *.html text eol=lf
 *.json text eol=lf

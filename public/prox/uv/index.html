@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loading</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0b0c2a 0%, #0a0a23 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      color: #ffffff;
+      position: relative;
+    }
+
+    .moon {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      width: 100px;
+      height: 100px;
+      background: #f1f1f1;
+      border-radius: 50%;
+      box-shadow: 0 0 30px #f1f1f1, 0 0 60px #f1f1f1;
+      z-index: 2;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.85;
+      z-index: 1;
+      animation: flyRight linear infinite;
+    }
+
+    @keyframes flyRight {
+      0% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(300vw);
+        opacity: 0;
+      }
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      filter: blur(8px);
+      animation: drift 60s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-300px); }
+      100% { transform: translateX(100vw); }
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 3;
+      text-align: center;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background-color: white;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    .dot:nth-child(3) { animation-delay: 0; }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+      } 
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .splash-text {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    .subtext {
+      font-size: 1rem;
+      color: #cccccc;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="moon"></div>
+
+  <!-- Star generation -->
+  <script>
+    const starCount = 180;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      const top = Math.random() * 100;
+      const left = -Math.random() * 100;
+      const size = 2 + Math.random() * 3; 
+      const duration = 2 + Math.random() * 2; 
+      star.style.top = `${top}vh`;
+      star.style.left = `${left}vw`;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.animationDuration = `${duration}s`;
+      document.body.appendChild(star);
+    }
+  </script>
+
+  <!-- Clouds -->
+  <div class="cloud" style="top: 30vh; left: -200px; width: 200px; height: 60px;"></div>
+  <div class="cloud" style="top: 60vh; left: -400px; width: 300px; height: 80px;"></div>
+
+  <!-- Loading UI -->
+  <div class="loading-container">
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="splash-text" id="splashText">Loading...</div>
+    <div class="subtext">Deploying Unbl0cker...</div>
+  </div>
+
+ <script src="/prox/globalconfigs.js"></script>
+<script>
+
+  function getCookie(name) {
+    const cookies = document.cookie.split('; ');
+    for (const c of cookies) {
+      if (c.startsWith(name + '=')) {
+        return decodeURIComponent(c.substring(name.length + 1));
+      }
+    }
+    return null;
+  }
+
+  const splash = document.getElementById("splashText");
+  const targetUrl = getCookie('target_url');
+
+    splash.textContent = splashMessages[Math.floor(Math.random() * splashMessages.length)];
+
+  function setCookie(name, value, seconds) {
+    const expires = new Date(Date.now() + seconds * 1000).toUTCString();
+    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+  }
+
+(() => {
+  const params = new URLSearchParams(location.search);
+  const urlParam = params.get("url");
+
+  if (urlParam) {
+    const cookieName = "target_url";
+    const exists = document.cookie.split('; ').some(c => c.startsWith(`${cookieName}=`));
+    if (!exists) {
+      setCookie(cookieName, urlParam, 20);
+      console.log("Stored cookie:", cookieName, urlParam);
+    }
+  }
+})();
+
+</script>
+    <script src="uv/uv.bundle.js"></script>
+    <script src="uv/uv.config.js"></script>
+    <script src="register-sw.js"></script>
+    <script src="embed.js"></script>
+</body>
+</html>

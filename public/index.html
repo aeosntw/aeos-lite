@@ -1,302 +1,856 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aeos Lite</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="/assets/fonts/Inter.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/lib/fa/css/all.min.css" />
-  <link rel="stylesheet" href="/assets/css/main.css" />
-  <link rel="stylesheet" href="/assets/css/settings.css" />
-  <style>
-    * { box-sizing: border-box; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aeos Lite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="/assets/fonts/Inter.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/lib/fa/css/all.min.css" />
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: flex-start;
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-      color: #fff;
-      background-image: url('/assets/img/Aeos Background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      position: relative;
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        background-image: url('/assets/img/Aeos Background.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
     }
+
     .sidebar {
-      width: 70px !important;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 0;
-      height: 100vh;
-      position: relative;
-      justify-content: flex-start;
+        width: 70px !important;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 0;
+        height: 100vh;
+        position: relative;
+        justify-content: flex-start;
+        transition: border-radius 0.3s ease-in-out;
     }
+
+    .sidebar.no-radius {
+        border-radius: 0 !important;
+    }
+
     .sidebar-logo {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+
     .sidebar-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
-.sidebar-icons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  width: 100%;
-}
+
+    .sidebar-icons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        width: 100%;
+    }
+
     .sidebar-item {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 0;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.2s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.2s;
     }
+
     .sidebar-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.1);
     }
-    .sidebar-item i { font-size: 1.2rem; }
+
+    .sidebar-item i {
+        font-size: 1.2rem;
+    }
+
     .content-area {
-      width: 100%;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      position: relative;
-      box-sizing: border-box;
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        box-sizing: border-box;
     }
+
     .content-area iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      margin: 0;
-      padding: 0;
-      display: block;
-      box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border: none;
+        margin: 0;
+        padding: 0;
+        display: block;
+        box-sizing: border-box;
     }
+
     .main-content {
-      padding: 20px;
-      overflow-y: auto;
-      height: calc(100vh - 40px);
+        padding: 20px;
+        overflow-y: auto;
+        height: 100vh;
+        box-sizing: border-box;
     }
+
     .filter-search-combined {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
+
     .search-input-wrapper {
-      display: flex;
-      align-items: center;
-      background-color: rgba(0, 0, 50, 0.9);
-      border-radius: 9999px;
-      padding: 0 10px;
-      gap: 10px;
+        display: flex;
+        align-items: center;
+        background-color: rgba(0, 0, 50, 0.9);
+        border-radius: 9999px;
+        padding: 0 10px;
+        gap: 10px;
     }
+
     .search-input-wrapper select,
     .search-input-wrapper input {
-      background: transparent;
-      border: none;
-      color: #fff;
-      padding: 10px;
-      outline: none;
+        background: transparent;
+        border: none;
+        color: #fff;
+        padding: 10px;
+        outline: none;
     }
+
     .search-input-wrapper input::placeholder {
-      color: #ccc;
+        color: #ccc;
     }
+
     .search-input-wrapper select {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
     }
+
     .search-icon {
-      color: #fff;
-      font-size: 1.2rem;
-      cursor: pointer;
+        color: #fff;
+        font-size: 1.2rem;
+        cursor: pointer;
     }
 
-	.sidebar-divider {
-  width: 60%;
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 0px 0;
+    .sidebar-divider {
+        width: 60%;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+        margin: 0px 0;
+    }
+
+    .sidebar-item {
+        margin: 8px 0;
+    }
+
+    .sidebar-divider {
+        width: 60%;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.2);
+        margin: 2px 0;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .aeos-btn {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 12px 28px;
+        border-radius: 12px;
+        font-size: 16px;
+        text-decoration: none;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        position: relative;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.05);
+    }
+
+    .glow-btn:hover {
+        background-color: rgba(0, 255, 255, 0.15);
+        transform: scale(1.05);
+    }
+
+    /* Games and Apps page specific styles */
+    .header-content {
+        text-align: center;
+        margin-bottom: 20px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 0 20px 20px;
+        margin-bottom: 20px;
+    }
+
+    .game-card {
+        background: rgba(16, 22, 54, 0.6);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(106, 126, 255, 0.2);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    .game-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(106, 126, 255, 0.3);
+    }
+
+    .game-image {
+        width: 100%;
+        height: 180px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-radius: 16px;
+        cursor: pointer;
+    }
+
+    .game-image::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: linear-gradient(to top, rgba(16, 22, 54, 0.9), transparent);
+        border-radius: 0 0 16px 16px;
+    }
+
+    .game-info {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative; /* Added for pseudo-element positioning */
+    }
+
+    .game-title, .game-description, .game-meta, .play-btn {
+        display: none;
+    }
+    
+.game-card:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    white-space: normal;
+    max-width: 80%;
+    text-align: center;
+    word-break: break-word;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+
+    pointer-events: none;
 }
 
-.sidebar-item {
-  margin: 8px 0;
-}
-.sidebar-divider {
-  width: 60%;
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 2px 0;
-}
 
-  </style>
+    .filter-search-combined {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInSlideUp 0.8s ease-out forwards;
+        animation-delay: 0.5s;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+        display: flex;
+        width: 100%;
+        max-width: 450px;
+        border-radius: 50px;
+        overflow: hidden;
+        border: 1px solid rgba(106, 126, 255, 0.3);
+        background: rgba(16, 22, 54, 0.8);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s ease-out;
+    }
+
+    .search-input-wrapper:hover {
+        max-width: 600px;
+        border-color: #6a7eff;
+        box-shadow: 0 8px 20px rgba(106, 126, 255, 0.4);
+    }
+
+    .search-input-wrapper:has(#game-search:focus) {
+        max-width: 600px;
+    }
+
+    .search-input-wrapper:has(.genre-dropdown:focus) {
+        max-width: 600px;
+    }
+
+    .genre-dropdown {
+        padding: 12px 15px;
+        background: transparent;
+        color: #fff;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        cursor: pointer;
+        border-right: 1px solid rgba(106, 126, 255, 0.3);
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        flex-shrink: 0;
+        padding-right: 35px;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23a0a8ff%22%20d%3D%22M4.5%204.5L6%206L7.5%204.5L8.25%205.25L6%207.5L3.75%205.25L4.5%204.5Z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        transition: all 0.3s ease;
+    }
+
+    .genre-dropdown:focus {
+        background-color: rgba(106, 126, 255, 0.1);
+        color: #fff;
+    }
+
+    .genre-dropdown option {
+        background-color: #1a1f3b;
+        color: #fff;
+        padding: 8px 15px;
+        font-size: 0.95rem;
+    }
+
+    .genre-dropdown option:hover {
+        background-color: #6a7eff;
+        color: #fff;
+    }
+
+    #game-search {
+        flex-grow: 1;
+        padding: 12px 40px 12px 15px;
+        border: none;
+        background: transparent;
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    #game-search:focus {
+        background-color: rgba(106, 126, 255, 0.05);
+        color: #fff;
+    }
+
+    @keyframes fadeInSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0a8ff;
+        font-size: 1rem;
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        .search-input-wrapper {
+            flex-direction: column;
+            border-radius: 12px;
+            max-width: 90%;
+        }
+
+        .search-input-wrapper:hover,
+        .search-input-wrapper:has(#game-search:focus),
+        .search-input-wrapper:has(.genre-dropdown:focus) {
+            max-width: 90%;
+        }
+
+        .genre-dropdown {
+            width: 100%;
+            border-bottom: 1px solid rgba(106, 126, 255, 0.3);
+            border-right: none;
+            border-radius: 8px 8px 0 0;
+            padding: 10px 15px;
+            background-position: right 10px center;
+        }
+
+        #game-search {
+            width: 100%;
+            padding: 10px 35px 10px 15px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .search-icon {
+            top: calc(50% + 20px);
+            transform: translateY(-50%);
+            right: 15px;
+        }
+
+        .game-card {
+            border-radius: 12px;
+        }
+
+        .game-image {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .games-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0 10px 20px;
+            margin-bottom: 20px;
+        }
+    }
+</style>
 </head>
+
 <body>
-<div id="aeos-update-trigger"></div>
-  <div class="sidebar">
-    <div class="sidebar-logo">
-      <img src="/assets/img/logos/Aeos.png" alt="Aeos Logo" />
-    </div>
-<div class="sidebar-icons">
-  <div class="sidebar-item" id="home-button" title="Home"><i class="fas fa-home"></i></div>
-  <div class="sidebar-item" id="games-button" title="Games"><i class="fas fa-gamepad"></i></div>
-  <div class="sidebar-item" id="apps-button" title="Apps"><i class="fas fa-grid-2"></i></div>
-
-  <div class="sidebar-divider"></div>
-
-  <div class="sidebar-item" id="movies-button" title="Movies"><i class="fas fa-film"></i></div>
-  <div class="sidebar-item" id="ai-button" title="AI"><i class="fas fa-robot"></i></div>
-
-  <div class="sidebar-item" id="settings-button" title="Settings"><i class="fas fa-cog"></i></div>
-</div>
-  </div>
-
-  <div class="content-area" id="content-area"></div>
-
-  <script src="/assets/js/log.js"></script>
-  <script src="/assets/js/overlay.js"></script>
-  <script src="/assets/js/games.js"></script>
-  <script src="/assets/js/widget.js"></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const contentArea = document.getElementById('content-area');
-
-      const homeHTML = `
-        <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 100vh;">
-          <h1 id="mainHeader" style="font-size: 3.7em; margin-bottom: 10px; font-family: 'Inter', sans-serif; opacity: 0; transition: opacity 0.5s ease-in-out; margin-top: 0; text-shadow: none;">aeos lite.</h1>
-          <p class="splash-text" id="splashText" style="font-size: 19.2px; color: #f0f0f0; opacity: 0; cursor: pointer; min-height: 25px; transition: opacity 0.5s ease-in-out; margin-top: 10px;"> </p>
+    <!-- Rest of your HTML content remains the same -->
+    <div id="aeos-update-trigger"></div>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="/assets/img/logos/Aeos.png" alt="Aeos Logo" />
         </div>
-      `;
+        <div class="sidebar-icons">
+            <div class="sidebar-item" id="home-button" title="Home"><i class="fas fa-home"></i></div>
+            <div class="sidebar-item" id="games-button" title="Games"><i class="fas fa-gamepad"></i></div>
+            <div class="sidebar-item" id="apps-button" title="Apps"><i class="fas fa-grid-2"></i></div>
 
-      const gamesHTML = `<div class="main-content"><div class="header-content"><h1 id="hub-title">Loading...</h1><p id="hub-description"></p><div class="filter-search-combined"><div class="search-input-wrapper"><select id="game-genre-filter-games" class="genre-dropdown"><option value="All">All Categories</option></select><input type="text" id="game-search-games" placeholder="Search games..."><i class="fas fa-search search-icon"></i></div></div></div><div class="games-grid" id="games-grid"></div></div>`;
+            <div class="sidebar-divider"></div>
 
-      const appsHTML = `<div class="main-content"><div class="header-content"><h1 id="hub-title">Loading...</h1><p id="hub-description"></p><div class="filter-search-combined"><div class="search-input-wrapper"><select id="game-genre-filter-apps" class="genre-dropdown"><option value="All">All Categories</option></select><input type="text" id="game-search-apps" placeholder="Search apps..."><i class="fas fa-search search-icon"></i></div></div></div><div class="games-grid" id="games-grid"></div></div>`;
+            <div class="sidebar-item" id="movies-button" title="Movies"><i class="fas fa-film"></i></div>
+            <div class="sidebar-item" id="ai-button" title="AI"><i class="fas fa-robot"></i></div>
 
-      const settingsHTML = `<div class="main-content"><div class="settings-container"><h1>Settings</h1><p class="subtitle">We use this info to enhance your experience.</p><div class="setting"><label for="enableLogging">Enable Tracking:</label><input type="checkbox" id="enableLogging"></div><div class="setting"><label for="useGps">Use GPS for Better Location (Requires Tracking Enabled):</label><input type="checkbox" id="useGps"></div></div><div id="notificationMessage" class="notification">Settings saved! Refresh the main application if changes aren't immediate.</div></div>`;
+            <div class="sidebar-item" id="settings-button" title="Settings"><i class="fas fa-cog"></i></div>
+        </div>
+    </div>
 
-      function loadContent(html, type) {
-        contentArea.innerHTML = html;
+    <div class="content-area" id="content-area"></div>
 
+    <script src="/assets/js/log.js"></script>
+    <script src="/assets/js/overlay.js"></script>
+    <script src="/assets/js/games.js"></script>
+    <script src="/assets/js/widget.js"></script>
+
+    <script>
+        // Your JavaScript code remains exactly the same
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentArea = document.getElementById('content-area');
+            const sidebar = document.querySelector('.sidebar');
+        
+            const homeHTML = `
+                        <div class="main-content" style="height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
+                            <div style="max-width: 90%; padding: 20px;">
+                                <h1 id="mainHeader" style="font-size: 3.7em; margin-bottom: 10px; font-family: 'Inter', sans-serif; opacity: 0; transition: opacity 0.5s ease-in-out; margin-top: 0; text-shadow: 0 0 10px rgba(255,255,255,0.2);">aeos lite.</h1>
+                                <p class="splash-text" id="splashText" style="font-size: 19.2px; color: #f0f0f0; opacity: 0; cursor: pointer; min-height: 25px; transition: opacity 0.5s ease-in-out; margin-top: 10px; text-shadow: 0 0 4px rgba(255,255,255,0.2);"> </p>
+                                <div style="margin-top: 40px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; animation: fadeIn 1s ease 0.5s forwards; opacity: 0;">
+                                    <a href="javascript:saveData()" class="aeos-btn glow-btn">📤 Export Data/Progress</a>
+                                    <label for="importData" class="aeos-btn glow-btn" style="cursor: pointer;">📥 Import Data/Progress</label>
+                                    <input type="file" id="importData" style="display: none;" onchange="loadData(event)" accept="application/json">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+        
+            const gamesHTML = `<div class="main-content"><div class="header-content"><h1 id="hub-title">Loading...</h1><p id="hub-description"></p><div class="filter-search-combined"><div class="search-input-wrapper"><select id="game-genre-filter-games" class="genre-dropdown"><option value="All">All Categories</option></select><input type="text" id="game-search-games" placeholder="Search [] games..."><i class="fas fa-search search-icon"></i></div></div></div><div class="games-grid" id="games-grid"></div></div>`;
+        
+            const appsHTML = `<div class="main-content"><div class="header-content"><h1 id="hub-title">Loading...</h1><p id="hub-description"></p><div class="filter-search-combined"><div class="search-input-wrapper"><select id="game-genre-filter-apps" class="genre-dropdown"><option value="All">All Categories</option></select><input type="text" id="game-search-apps" placeholder="Search apps..."><i class="fas fa-search search-icon"></i></div></div></div><div class="games-grid" id="games-grid"></div></div>`;
+        
+            const settingsHTML = `<div class="main-content"><div class="settings-container"><h1>Settings</h1><p class="subtitle">We use this info to enhance your experience.</p><div class="setting"><label for="enableLogging">Enable Tracking:</label><input type="checkbox" id="enableLogging"></div><div class="setting"><label for="useGps">Use GPS for Better Location (Requires Tracking Enabled):</label><input type="checkbox" id="useGps"></div></div><div id="notificationMessage" class="notification">Settings saved! Refresh the main application if changes aren't immediate.</div></div>`;
+        
+            function loadContent(html, type) {
+                contentArea.innerHTML = html;
+                if (type !== 'movies') {
+                    sidebar.classList.remove('no-radius');
+                }
+        
         if (type === 'games') {
-          initializeHub({ jsonPath: '/assets/json/hub.json', genreFilterId: 'game-genre-filter-games', searchInputId: 'game-search-games', gridId: 'games-grid', titleId: 'hub-title', descriptionId: 'hub-description' });
-        } else if (type === 'apps') {
-          initializeHub({ jsonPath: '/assets/json/apps.json', genreFilterId: 'game-genre-filter-apps', searchInputId: 'game-search-apps', gridId: 'games-grid', titleId: 'hub-title', descriptionId: 'hub-description' });
+            const jsonPath = '/assets/json/hub.json';
+        
+            initializeHub({
+                jsonPath,
+                genreFilterId: 'game-genre-filter-games',
+                searchInputId: 'game-search-games',
+                gridId: 'games-grid',
+                titleId: 'hub-title',
+                descriptionId: 'hub-description'
+            });
+      
+            setTimeout(() => {
+                const searchInput = document.getElementById('game-search-games');
+                if (!searchInput) {
+                    return;
+                }
+        
+        fetch(jsonPath)
+          .then(res => res.json())
+          .then(data => {
+            const count = Array.isArray(data.games) ? data.games.length : 0;
+        
+            const searchInput = document.getElementById('game-search-games');
+            if (searchInput) {
+              searchInput.placeholder = `Search ${count} games...`;
+            } else {
+            }
+          })
+          .catch(err => {
+            console.error("Failed to fetch hub.json:", err);
+          });
+            }, 200);
         }
-      }
+         else if (type === 'apps') {
+                    initializeHub({
+                        jsonPath: '/assets/json/apps.json',
+                        genreFilterId: 'game-genre-filter-apps',
+                        searchInputId: 'game-search-apps',
+                        gridId: 'games-grid',
+                        titleId: 'hub-title',
+                        descriptionId: 'hub-description'
+                    });
+                }
+            }
+        
+            function initSettingsScript() {
+                const enableLoggingCheckbox = document.getElementById('enableLogging');
+                const useGpsCheckbox = document.getElementById('useGps');
+                const notification = document.getElementById('notificationMessage');
+        
+                function showNotification() {
+                    notification.classList.add('show');
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 3000);
+                }
+        
+                function updateSettings() {
+                    localStorage.setItem('ENABLE_LOGGING', enableLoggingCheckbox.checked);
+                    localStorage.setItem('USE_GPS', useGpsCheckbox.checked);
+                    showNotification();
+                }
+        
+                let initialEnableLogging = localStorage.getItem('ENABLE_LOGGING');
+                let initialUseGps = localStorage.getItem('USE_GPS');
+        
+                if (initialEnableLogging === null) {
+                    initialEnableLogging = 'false';
+                    localStorage.setItem('ENABLE_LOGGING', initialEnableLogging);
+                }
+                if (initialUseGps === null) {
+                    initialUseGps = 'false';
+                    localStorage.setItem('USE_GPS', initialUseGps);
+                }
+        
+                enableLoggingCheckbox.checked = initialEnableLogging === 'true';
+                useGpsCheckbox.checked = initialUseGps === 'true';
+                useGpsCheckbox.disabled = !enableLoggingCheckbox.checked;
+        
+                enableLoggingCheckbox.addEventListener('change', function() {
+                    useGpsCheckbox.disabled = !this.checked;
+                    if (!this.checked) useGpsCheckbox.checked = false;
+                    updateSettings();
+                });
+        
+                useGpsCheckbox.addEventListener('change', updateSettings);
+            }
+        
+            document.getElementById('home-button').addEventListener('click', () => {
+                loadContent(homeHTML);
+                initHomeScript();
+            });
+            document.getElementById('games-button').addEventListener('click', () => loadContent(gamesHTML, 'games'));
+            document.getElementById('apps-button').addEventListener('click', () => loadContent(appsHTML, 'apps'));
+            document.getElementById('settings-button').addEventListener('click', () => {
+                loadContent(`<iframe src="settings.html" style="width:100%; height:100%; border:none;"></iframe>`);
+            });
+            document.getElementById('movies-button').addEventListener('click', () => {
+                sidebar.classList.add('no-radius');
+                loadContent(`<iframe src="/pages/warn.html?forward=/prox/uv/?url=https://aeosflix.web.app/aeos-site&original=https://aeosflix.web.app/aeos-site" style="width:100%; height:100%; border:none;" allowfullscreen allow="fullscreen"></iframe>`, 'movies');
+            });
+        
+            document.getElementById('ai-button').addEventListener('click', () => {
+                loadContent(`<iframe src="/pages/ai" style="width:100%; height:100%; border:none;"></iframe>`);
+            });
+        
+            loadContent(homeHTML);
+            initHomeScript();
+        
+function initHomeScript() {
+    const splashTexts = [
+        "illegal things are legal until they're not",
+        "feature or bug? yes.",
+        "runs better with motivation",
+        "im sure it works fine"
+    ];
 
-      function initSettingsScript() {
-        const enableLoggingCheckbox = document.getElementById('enableLogging');
-        const useGpsCheckbox = document.getElementById('useGps');
-        const notification = document.getElementById('notificationMessage');
+    let lastIndex = -1; // Initialize with a value that won't match any index
 
-        function showNotification() {
-          notification.classList.add('show');
-          setTimeout(() => { notification.classList.remove('show'); }, 3000);
-        }
+    function refreshSplashText() {
+        const splash = document.getElementById('splashText');
+        if (!splash) return;
 
-        function updateSettings() {
-          localStorage.setItem('ENABLE_LOGGING', enableLoggingCheckbox.checked);
-          localStorage.setItem('USE_GPS', useGpsCheckbox.checked);
-          showNotification();
-        }
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * splashTexts.length);
+        } while (randomIndex === lastIndex); // Keep generating a new index until it's different from the last one
 
-        let initialEnableLogging = localStorage.getItem('ENABLE_LOGGING');
-        let initialUseGps = localStorage.getItem('USE_GPS');
+        lastIndex = randomIndex; // Update the lastIndex with the new one
 
-        if (initialEnableLogging === null) {
-          initialEnableLogging = 'false';
-          localStorage.setItem('ENABLE_LOGGING', initialEnableLogging);
-        }
-        if (initialUseGps === null) {
-          initialUseGps = 'false';
-          localStorage.setItem('USE_GPS', initialUseGps);
-        }
-
-        enableLoggingCheckbox.checked = initialEnableLogging === 'true';
-        useGpsCheckbox.checked = initialUseGps === 'true';
-        useGpsCheckbox.disabled = !enableLoggingCheckbox.checked;
-
-        enableLoggingCheckbox.addEventListener('change', function() {
-          useGpsCheckbox.disabled = !this.checked;
-          if (!this.checked) useGpsCheckbox.checked = false;
-          updateSettings();
-        });
-
-        useGpsCheckbox.addEventListener('change', updateSettings);
-      }
-
-      document.getElementById('home-button').addEventListener('click', () => {
-  loadContent(homeHTML);
-  initHomeScript();
-});
-      document.getElementById('games-button').addEventListener('click', () => loadContent(gamesHTML, 'games'));
-      document.getElementById('apps-button').addEventListener('click', () => loadContent(appsHTML, 'apps'));
-      document.getElementById('settings-button').addEventListener('click', () => {
-        loadContent(`<iframe src="settings.html" style="width:100%; height:100%; border:none;"></iframe>`);
-      });
-	  document.getElementById('movies-button').addEventListener('click', () => {
-  loadContent(`<iframe src="/pages/searchmedia.html" style="width:100%; height:100%; border:none;" allowfullscreen allow="fullscreen"></iframe>`);
-});
-
-document.getElementById('ai-button').addEventListener('click', () => {
-  loadContent(`<iframe src="/pages/ai" style="width:100%; height:100%; border:none;"></iframe>`);
-});
-
-      loadContent(homeHTML);
-      initHomeScript();
-
-      function initHomeScript() {
-        const splashTexts = [
-          "welcom or somethin",
-          "why are u here bro",
-          "the teacher is sooo looking at you",
-          "illegal things are legal until they're not",
-          "why does this specific message pop up more istg",
-          "coding is great!"
-        ];
-
-        function refreshSplashText() {
-          const splash = document.getElementById('splashText');
-          if (!splash) return;
-          splash.style.opacity = '0';
-          setTimeout(() => {
-            const randomIndex = Math.floor(Math.random() * splashTexts.length);
+        splash.style.opacity = '0';
+        setTimeout(() => {
             splash.textContent = splashTexts[randomIndex];
             splash.style.opacity = '1';
-          }, 500);
+        }, 500);
+    }
+
+    const header = document.getElementById('mainHeader');
+    const splash = document.getElementById('splashText');
+    if (header) header.style.opacity = '1';
+    setTimeout(refreshSplashText, 100);
+
+    if (splash) splash.onclick = refreshSplashText;
+}
+        });
+        
+        async function saveData() {
+            const localData = JSON.stringify(localStorage);
+            const cookies = document.cookie;
+            const indexedDBData = await exportIndexedDB();
+        
+            const fullData = JSON.stringify({
+                localStorage: localData,
+                cookies: cookies,
+                indexedDB: indexedDBData
+            });
+        
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(new Blob([fullData], {
+                type: "application/json"
+            }));
+            link.download = `aeosdata-${Date.now()}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-
-        const header = document.getElementById('mainHeader');
-        const splash = document.getElementById('splashText');
-        if (header) header.style.opacity = '1';
-        setTimeout(refreshSplashText, 100);
-
-        if (splash) splash.onclick = refreshSplashText;
-      }
-    });
-
-
-  </script>
+        
+        function loadData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const content = JSON.parse(e.target.result);
+        
+                    const localData = JSON.parse(content.localStorage);
+                    for (let key in localData) {
+                        localStorage.setItem(key, localData[key]);
+                    }
+        
+                    const cookies = content.cookies.split("; ");
+                    cookies.forEach(cookie => document.cookie = cookie);
+        
+                    await importIndexedDB(content.indexedDB);
+        
+                    alert("Data loaded successfully!");
+                } catch (err) {
+                    console.error("Load error:", err);
+                    alert("Failed to load data.");
+                }
+            };
+            if (!file.name.endsWith('.json')) {
+                alert('Please upload a valid .json file.');
+                return;
+            }
+            reader.readAsText(file)
+        }
+        
+        async function exportIndexedDB() {
+            const dbs = await indexedDB.databases?.();
+            const output = {};
+        
+            for (const dbInfo of dbs || []) {
+                const {
+                    name,
+                    version
+                } = dbInfo;
+                if (!name) continue;
+        
+                try {
+                    const db = await new Promise((resolve, reject) => {
+                        const req = indexedDB.open(name, version);
+                        req.onsuccess = () => resolve(req.result);
+                        req.onerror = () => reject(req.error);
+                    });
+        
+                    const dbDump = {};
+                    const tx = db.transaction(db.objectStoreNames, "readonly");
+        
+                    for (const storeName of db.objectStoreNames) {
+                        dbDump[storeName] = [];
+                        const store = tx.objectStore(storeName);
+        
+                        const allItems = await new Promise((resolve, reject) => {
+                            const items = [];
+                            const cursor = store.openCursor();
+                            cursor.onsuccess = (e) => {
+                                const cur = e.target.result;
+                                if (cur) {
+                                    items.push({
+                                        key: cur.key,
+                                        value: cur.value
+                                    });
+                                    cur.continue();
+                                } else {
+                                    resolve(items);
+                                }
+                            };
+                            cursor.onerror = () => reject(cursor.error);
+                        });
+        
+                        dbDump[storeName] = allItems;
+                    }
+        
+                    output[name] = {
+                        version,
+                        data: dbDump
+                    };
+                    db.close();
+                } catch (err) {
+                }
+            }
+        
+            return output;
+        }
+        
+        async function importIndexedDB(dump) {
+            for (const dbName in dump) {
+                const {
+                    version,
+                    data
+                } = dump[dbName];
+        
+                const req = indexedDB.open(dbName, version);
+                req.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    for (const storeName in data) {
+                        if (!db.objectStoreNames.contains(storeName)) {
+                            db.createObjectStore(storeName, {
+                                keyPath: "key",
+                                autoIncrement: false
+                            });
+                        }
+                    }
+                };
+        
+                req.onsuccess = () => {
+                    const db = req.result;
+                    const tx = db.transaction(Object.keys(data), "readwrite");
+        
+                    for (const storeName in data) {
+                        const store = tx.objectStore(storeName);
+                        data[storeName].forEach(entry => {
+                            try {
+                                store.put(entry.value, entry.key);
+                            } catch (e) {
+                            }
+                        });
+                    }
+        
+                    tx.oncomplete = () => db.close();
+                };
+        
+                req.onerror = (e) => {
+                };
+            }
+        }
+        
+        function handleHashChange() {
+            const hash = window.location.hash.slice(1).toLowerCase();
+        
+            switch (hash) {
+                case 'ai':
+                    document.getElementById('ai-button')?.click();
+                    break;
+                case 'games':
+                    document.getElementById('games-button')?.click();
+                    break;
+                case 'apps':
+                    document.getElementById('apps-button')?.click();
+                    break;
+                case 'movies':
+                    document.getElementById('movies-button')?.click();
+                    break;
+                case 'settings':
+                    document.getElementById('settings-button')?.click();
+                    break;
+                case 'home':
+                case '':
+                    document.getElementById('home-button')?.click();
+                    break;
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', handleHashChange);
+        
+        window.addEventListener('hashchange', handleHashChange);
+    </script>
 </body>
+
 </html>

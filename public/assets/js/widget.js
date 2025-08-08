@@ -247,8 +247,8 @@
 
   function createWidgetBotEmbed() {
     const embed = document.createElement("widgetbot");
-    embed.setAttribute("server", "1195939403990831114");
-    embed.setAttribute("channel", "1393296737560694825");
+    embed.setAttribute("server", "1398415428866539600");
+    embed.setAttribute("channel", "1398415430174900288");
     embed.setAttribute("width", "100%");
     embed.setAttribute("height", "100%");
     embed.style.border = "none";

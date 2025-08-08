@@ -143,6 +143,10 @@
 
     const providers = [
       { name: "Auto (Recommended)", url: "" },
+	  { name: "vidsrc.cc v3", url: "https://vidsrc.cc/v3/embed/movie/" },
+      { name: "vidsrc.cc v2", url: "https://vidsrc.cc/v2/embed/movie/" },
+	  { name: "vidpop.xyz", url: "https://www.vidpop.xyz/embed/?id=" },
+	  { name: "multiembed.mov", url: "https://multiembed.mov/directstream.php?video_id=" },
       { name: "vidsrc.in", url: "https://vidsrc.in/embed/movie/" },
       { name: "vidsrc.pm", url: "https://vidsrc.pm/embed/movie/" },
       { name: "vidsrc.net", url: "https://vidsrc.net/embed/movie/" },
@@ -150,9 +154,7 @@
       { name: "vidsrc.io", url: "https://vidsrc.io/embed/movie/" },
       { name: "vidsrc.vc", url: "https://vidsrc.vc/embed/movie/" },
       { name: "2embed.cc", url: "https://www.2embed.cc/embed/" },
-      { name: "2embed.skin", url: "https://www.2embed.skin/embed/" },
-      { name: "vidsrc.cc v2", url: "https://vidsrc.cc/v2/embed/movie/" },
-      { name: "vidsrc.cc v3", url: "https://vidsrc.cc/v3/embed/movie/" }
+      { name: "2embed.skin", url: "https://www.2embed.skin/embed/" }
     ];
 
     function populateSourceSelector() {
@@ -177,6 +179,8 @@
            return `https://vidsrc.cc/${version}/embed/movie/${movieId}/`;
         } else if (provider.url.startsWith("https://vidsrc.")) {
             return `${provider.url.replace('/embed/movie/', '/embed/movie')}?tmdb=${movieId}&ds_lang=en`;
+        } else if (provider.name === "multiembed.mov") {
+            return `${provider.url}${movieId}&tmdb=1`; // tmdb is hardcoded to 1
         }
         else {
             return `${provider.url}${movieId}`;
@@ -253,15 +257,6 @@ function createAndLoadIframe(src, providerIndex, autoCycling) {
 
     document.body.appendChild(iframe);
 
-    timeout = setTimeout(() => {
-        iframe.remove();
-        if (autoCycling) {
-            currentProviderIndex++;
-            tryNextAutoProvider();
-        } else {
-            status.innerHTML = `<span class="error">Loading timed out for ${providers[providerIndex].name}. Please try another source.</span>`;
-        }
-    }, 5000);
 }
 
     sourceSelector.addEventListener("change", () => {
